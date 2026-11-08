@@ -1,0 +1,45 @@
+name: Test & Verify Pull Request
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Run Unit Tests & PR Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow numpy
+
+      - name: Check for Accidental Asset Commits
+        run: |
+          # Check if PR modifies generated assets
+          CHANGED_ASSETS=$(git diff --name-only origin/main...HEAD | grep -E '^assets/(dragon\.gif|dragon-status\.svg|drago-state\.json)' || true)
+          if [ -n "$CHANGED_ASSETS" ]; then
+            echo "::error::This pull request includes personal generated assets:"
+            echo "$CHANGED_ASSETS"
+            echo ""
+            echo "Please remove generated assets from your PR branch before merging:"
+            echo "  git checkout origin/main -- assets/dragon.gif assets/dragon-status.svg assets/drago-state.json"
+            echo "  git commit -m 'chore: remove personal assets from PR'"
+            echo "  git push"
+            exit 1
+          fi
+
+      - name: Run Test Suite
+        run: |
+          python -m unittest discover tests
