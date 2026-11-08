@@ -21,25 +21,25 @@ class SpriteAnimator:
         
         # Load and cache original sprite
         if not os.path.exists(self.sprite_path):
-            # Fallback to adult if specific sprite missing
             self.sprite_path = os.path.join("assets", "sprites", "06_adult.png")
 
-        raw_sprite = Image.open(self.sprite_path).convert("RGB")
-        self.orig_w, self.orig_h = raw_sprite.size
-        
-        # Extract RGB and compute clean soft alpha mask (keying out pure black background)
-        raw_arr = np.array(raw_sprite, dtype=np.float32)
-        max_c = np.max(raw_arr, axis=2)
-        
-        # Pure black is 0; dark charcoal outlines are ~15-30
-        # Smooth threshold eliminates black background without eroding dark outlines
-        alpha = np.clip((max_c - 2.0) / 10.0, 0.0, 1.0) * 255.0
-        
-        # Detect eye location for blinking (amber pixels on head)
-        self.eye_pos = self._detect_eye_position(raw_arr)
-        
-        self.sprite_arr = raw_arr
-        self.alpha_arr = alpha
+        raw_im = Image.open(self.sprite_path)
+        self.orig_w, self.orig_h = raw_im.size
+
+        # If RGBA image has native alpha, preserve its pristine alpha channel
+        if raw_im.mode == "RGBA":
+            raw_arr = np.array(raw_im, dtype=np.float32)
+            self.sprite_arr = raw_arr[:, :, :3]
+            self.alpha_arr = raw_arr[:, :, 3]
+        else:
+            raw_rgb = raw_im.convert("RGB")
+            raw_arr = np.array(raw_rgb, dtype=np.float32)
+            max_c = np.max(raw_arr, axis=2)
+            self.sprite_arr = raw_arr
+            self.alpha_arr = np.clip((max_c - 2.0) / 10.0, 0.0, 1.0) * 255.0
+
+        # Detect eye location for blinking
+        self.eye_pos = self._detect_eye_position(self.sprite_arr)
         self.is_egg = getattr(state, "is_egg", False)
 
     def _detect_eye_position(self, arr: np.ndarray) -> Optional[Tuple[int, int]]:
@@ -71,23 +71,23 @@ class SpriteAnimator:
 
         if self.is_egg:
             # --- EGG KINEMATICS ---
-            # Gentle rhythmic rocking and internal life pulse
-            rock_angle = math.sin(t_rad) * 0.07
-            cx, cy = w * 0.5, h * 0.88
-            
-            # Rotation matrix
+            # Gentle rhythmic rocking and internal magma heartbeat pulse
+            rock_angle = math.sin(t_rad) * 0.065
+            cx, cy = w * 0.5, h * 0.90
+
             cos_a = math.cos(rock_angle)
             sin_a = math.sin(rock_angle)
             rx = (x_coords - cx) * cos_a - (y_coords - cy) * sin_a + cx
             ry = (x_coords - cx) * sin_a + (y_coords - cy) * cos_a + cy
-            
+
             src_x = np.clip(rx, 0, w - 1)
             src_y = np.clip(ry, 0, h - 1)
-            
-            # Internal heartbeat pulse
-            pulse = math.sin(t_rad) * 0.15
-            arr[:, :, 0] = np.clip(arr[:, :, 0] * (1.0 + pulse * 0.3), 0, 255)
-            arr[:, :, 1] = np.clip(arr[:, :, 1] * (1.0 + pulse * 0.2), 0, 255)
+
+            # Glowing magma heartbeat pulse
+            pulse = math.sin(t_rad) * 0.22
+            gold_mask = (arr[:, :, 0] > 180) & (arr[:, :, 1] > 100) & (arr[:, :, 2] < 70)
+            arr[gold_mask, 0] = np.clip(arr[gold_mask, 0] * (1.0 + pulse * 0.15), 0, 255)
+            arr[gold_mask, 1] = np.clip(arr[gold_mask, 1] * (1.0 + pulse * 0.15), 0, 255)
         else:
             # --- DRAGON SKELETAL KINEMATICS ---
             # 1. Tail undulating wave (left region: x < w * 0.44)

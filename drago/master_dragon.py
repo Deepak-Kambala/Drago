@@ -689,3 +689,4 @@ class MasterDragonModel:
                 (c_center[0] - cw, c_y),
             ]
             self._draw_poly(draw, crystal, (255, 240, 160), self.c_ink, self.lw_fine)
+
