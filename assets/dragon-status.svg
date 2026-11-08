@@ -31,13 +31,13 @@
 
   <!-- Progress Bar & Score -->
   <g transform="translate(340, 28)">
-    <text x="0" y="14" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">Evolution Power: <tspan fill="#F5B700">298.7</tspan></text>
-    <text x="280" y="14" fill="#8B949E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" text-anchor="end">99%</text>
+    <text x="0" y="14" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">Evolution Power: <tspan fill="#F5B700">299.8</tspan></text>
+    <text x="280" y="14" fill="#8B949E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" text-anchor="end">100%</text>
     
     <!-- Track -->
     <rect x="0" y="22" width="280" height="8" rx="4" fill="#21262D" />
     <!-- Filled Bar -->
-    <rect x="0" y="22" width="277" height="8" rx="4" fill="url(#barGrad)" filter="url(#glow)" />
+    <rect x="0" y="22" width="279" height="8" rx="4" fill="url(#barGrad)" filter="url(#glow)" />
     
     <text x="0" y="44" fill="#8B949E" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="10">Next: Adolescent (300 XP)</text>
   </g>
@@ -54,7 +54,7 @@
 
     <!-- Activity Stats Column -->
     <text x="340" y="12" fill="#8B949E" font-size="10" font-weight="700" letter-spacing="1">GITHUB ACTIVITY</text>
-    <text x="340" y="32" fill="#C9D1D9" font-size="12">Commits: <tspan fill="#F0F6FC" font-weight="600">115</tspan> • PRs: <tspan fill="#F0F6FC" font-weight="600">19</tspan> (Merged: <tspan fill="#F0F6FC" font-weight="600">22</tspan>)</text>
+    <text x="340" y="32" fill="#C9D1D9" font-size="12">Commits: <tspan fill="#F0F6FC" font-weight="600">116</tspan> • PRs: <tspan fill="#F0F6FC" font-weight="600">19</tspan> (Merged: <tspan fill="#F0F6FC" font-weight="600">22</tspan>)</text>
     <text x="340" y="52" fill="#C9D1D9" font-size="12">Repos: <tspan fill="#F0F6FC" font-weight="600">25</tspan> • Stars: <tspan fill="#F0F6FC" font-weight="600">80</tspan> • Streak: <tspan fill="#F5B700" font-weight="600">3d 🔥</tspan></text>
   </g>
 </svg>
