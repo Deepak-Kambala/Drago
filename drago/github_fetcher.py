@@ -6,11 +6,12 @@ stars, and repositories.
 """
 
 import os
+import re
 import json
 import urllib.request
 import urllib.error
 from datetime import datetime, timezone, timedelta
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any, List, Tuple
 from drago.evolution import GitHubActivity
 
 GRAPHQL_QUERY = """
@@ -71,9 +72,52 @@ class GitHubFetcher:
 
         return self._fetch_rest(username)
 
+    def _fetch_profile_contributions(self, username: str) -> Optional[Tuple[int, int]]:
+        """
+        Scrapes the authentic profile contribution calendar total and current active streak
+        matching the exact contribution count displayed on github.com/<username>.
+        """
+        url = f"https://github.com/users/{username}/contributions"
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; Drago/2.0)"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                html = resp.read().decode("utf-8")
+
+            # 1. Total contributions
+            total = None
+            m = re.search(r'([0-9,]+)\s+contributions\s+in\s+the\s+last\s+year', html)
+            if m:
+                total = int(m.group(1).replace(",", ""))
+            else:
+                m2 = re.findall(r'([0-9,]+)\s+contributions', html)
+                if m2:
+                    total = int(m2[0].replace(",", ""))
+
+            # 2. Current streak
+            items = re.findall(r'data-date="(\d{4}-\d{2}-\d{2})".*?data-level="(\d+)"', html)
+            items.sort(key=lambda x: x[0], reverse=True)
+            now_dt = datetime.now(timezone.utc).date()
+            current_streak = 0
+            streak_broken = False
+            for date_str, level_str in items:
+                d_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+                diff = (now_dt - d_date).days
+                lvl = int(level_str)
+                if not streak_broken:
+                    if diff == 0 and lvl == 0:
+                        continue  # Today not yet active
+                    elif lvl > 0:
+                        current_streak += 1
+                    else:
+                        streak_broken = True
+
+            return (total or 0, current_streak)
+        except Exception as e:
+            return None
+
     def _search_count(self, query: str, item_type: str = "commits") -> Optional[int]:
         """
-        Queries the GitHub Search API for precise global lifetime totals (commits, PRs, issues).
+        Queries the GitHub Search API for precise global lifetime totals (PRs, issues, commits).
         """
         headers = {
             "Accept": "application/vnd.github.v3+json",
@@ -90,38 +134,6 @@ class GitHubFetcher:
                 return data.get("total_count", 0)
         except Exception:
             return None
-
-    def _fetch_all_years_commits(self, username: str, years: List[int]) -> int:
-        """
-        Batch-fetches commit contributions across all active years via GraphQL.
-        """
-        if not years or not self.token:
-            return 0
-        try:
-            subqueries = [
-                f'y{y}: contributionsCollection(from: "{y}-01-01T00:00:00Z", to: "{y}-12-31T23:59:59Z") '
-                f'{{ totalCommitContributions restrictedContributionsCount }}'
-                for y in years
-            ]
-            query = '{\n  user(login: "' + username + '") {\n    ' + '\n    '.join(subqueries) + '\n  }\n}'
-            headers = {
-                "Authorization": f"Bearer {self.token}",
-                "Content-Type": "application/json",
-                "User-Agent": "Drago-GitHub-Dragon",
-            }
-            data = json.dumps({"query": query}).encode("utf-8")
-            req = urllib.request.Request("https://api.github.com/graphql", data=data, headers=headers)
-            with urllib.request.urlopen(req, timeout=15) as resp:
-                res = json.loads(resp.read().decode("utf-8"))
-            user_data = res.get("data", {}).get("user", {}) or {}
-            total = 0
-            for yr_data in user_data.values():
-                if isinstance(yr_data, dict):
-                    total += yr_data.get("totalCommitContributions", 0) + yr_data.get("restrictedContributionsCount", 0)
-            return total
-        except Exception as e:
-            print(f"[Drago] Notice: Could not multi-year batch commits: {e}")
-            return 0
 
     def _fetch_graphql(self, username: str) -> GitHubActivity:
         headers = {
@@ -199,20 +211,16 @@ class GitHubFetcher:
             # Current streak calculation
             if not streak_broken:
                 if diff_days == 0 and cnt == 0:
-                    continue  # Today not yet active is fine
+                    continue  # Today not yet active
                 elif cnt > 0:
                     current_streak += 1
                 else:
                     streak_broken = True
 
-        # Real Lifetime Commits (Lifetime across all years + Search API)
-        years = contribs.get("contributionYears", [])
-        multi_year_commits = self._fetch_all_years_commits(username, years) if len(years) > 1 else 0
-        year_commits = contribs.get("totalCommitContributions", 0) + contribs.get("restrictedContributionsCount", 0)
-        search_commits = self._search_count(f"author:{username}", item_type="commits")
-
-        candidates_commits = [c for c in [multi_year_commits, year_commits, search_commits] if c is not None]
-        total_commits = max(candidates_commits) if candidates_commits else 0
+        # Total contributions shown on the developer's GitHub profile
+        cal_total = cal.get("totalContributions", 0)
+        commit_contribs = contribs.get("totalCommitContributions", 0) + contribs.get("restrictedContributionsCount", 0)
+        total_commits = cal_total if cal_total > 0 else (commit_contribs if commit_contribs > 0 else 0)
 
         return GitHubActivity(
             total_commits=total_commits,
@@ -235,7 +243,7 @@ class GitHubFetcher:
     def _fetch_rest(self, username: str) -> GitHubActivity:
         """
         Fallback REST API method for unauthenticated or public requests.
-        Uses GitHub Search API for precise global lifetime metrics.
+        Accurately parses contribution calendar and PR counts.
         """
         headers = {
             "Accept": "application/vnd.github.v3+json",
@@ -252,13 +260,13 @@ class GitHubFetcher:
 
         public_repos = u_info.get("public_repos", 0)
 
-        # 2. Authentic lifetime stats via Search API
-        search_commits = self._search_count(f"author:{username}", item_type="commits")
+        # 2. Authentic profile contribution calendar metrics
+        cal_stats = self._fetch_profile_contributions(username)
         search_prs = self._search_count(f"type:pr+author:{username}", item_type="issues")
         search_merged_prs = self._search_count(f"type:pr+author:{username}+is:merged", item_type="issues")
         search_issues = self._search_count(f"type:issue+author:{username}", item_type="issues")
 
-        # 3. Public events (last 100 events) for rolling streaks & recency
+        # 3. Public events for recent activity recency
         url_events = f"https://api.github.com/users/{username}/events?per_page=100"
         req_events = urllib.request.Request(url_events, headers=headers)
         events = []
@@ -307,8 +315,12 @@ class GitHubFetcher:
         except Exception:
             pass
 
-        # Final resolved numbers (prefer accurate global search, fall back to events)
-        final_commits = search_commits if search_commits is not None else event_commits
+        if cal_stats:
+            final_commits, streak = cal_stats
+        else:
+            final_commits = event_commits
+            streak = len(active_days)
+
         final_prs = search_prs if search_prs is not None else event_prs
         final_merged_prs = search_merged_prs if search_merged_prs is not None else event_merged_prs
         final_issues = search_issues if search_issues is not None else event_issues
@@ -326,7 +338,7 @@ class GitHubFetcher:
             issues_closed=int(round(final_issues * 0.7)),
             public_repos=public_repos,
             total_stars=total_stars,
-            current_streak=len(active_days),
-            longest_streak=len(active_days),
+            current_streak=streak,
+            longest_streak=streak,
             raw_data={"source": "rest", "username": username},
         )

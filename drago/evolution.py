@@ -1,6 +1,7 @@
 """
 Evolution engine for Drago.
-Calculates evolution stage, progression, rolling decay, and individual anatomical feature unlocks.
+Calculates evolution stage, progression, and individual anatomical feature unlocks
+directly driven by developers' authentic GitHub contribution milestones.
 """
 
 from dataclasses import dataclass, field
@@ -44,29 +45,25 @@ class DragonState:
     progress_to_next: float  # 0.0 to 1.0
     next_stage_name: Optional[str]
     next_stage_score: Optional[int]
-    
-    # Anatomical feature levels (1.0 to 7.0+ continuous or discrete)
-    body_scale: float
-    horn_level: int
-    wing_level: int
-    spike_level: int
-    armor_level: int
-    tail_level: int
-    aura_intensity: float    # 0.0 to 1.0 (streak effect)
-    
-    # Specific feature modifiers
-    wing_span_multiplier: float
-    tail_length_multiplier: float
-    horn_curvature: float
-    armor_plates: int
-    dorsal_spike_count: int
-    eye_glow: float
-    
-    # Sprite asset reference
-    sprite_file: str = "06_adult.png"
     is_egg: bool = False
     
-    # Breakdown stats for display/logging
+    # Anatomical feature levels (1.0 to 7.0+ continuous or discrete)
+    body_scale: float = 1.0
+    horn_level: int = 0
+    wing_level: int = 0
+    spike_level: int = 0
+    armor_level: int = 0
+    tail_level: int = 0
+    
+    # Kinematic parameters
+    aura_intensity: float = 0.0
+    wing_span_multiplier: float = 1.0
+    tail_length_multiplier: float = 1.0
+    horn_curvature: float = 0.5
+    armor_plates: int = 2
+    dorsal_spike_count: int = 3
+    eye_glow: float = 0.5
+    
     stats_breakdown: Dict[str, Any] = field(default_factory=dict)
 
 class EvolutionEngine:
@@ -77,62 +74,29 @@ class EvolutionEngine:
 
     def calculate_score(self, activity: GitHubActivity) -> tuple[float, float, Dict[str, float]]:
         """
-        Calculates raw score and rolling time-decayed activity score.
-        Returns: (decayed_score, raw_score, category_scores)
+        Calculates evolution power (score) directly based on developer contributions.
+        Each contribution awards 1.0 XP progression so the user's level and progress bar
+        accurately mirror their progress toward the next evolutionary threshold.
         """
-        # Base activity points
-        commit_pts = activity.total_commits * self.weights.get("commit", 1.0)
-        pr_pts = activity.total_prs * self.weights.get("pull_request", 4.0)
-        merged_pr_pts = activity.merged_prs * self.weights.get("merged_pr", 6.0)
-        issue_pts = (activity.issues_opened + activity.issues_closed * 0.5) * self.weights.get("issue", 2.0)
-        repo_pts = activity.public_repos * self.weights.get("repo", 5.0)
-        star_pts = activity.total_stars * self.weights.get("star_received", 1.5)
-
-        raw_score = commit_pts + pr_pts + merged_pr_pts + issue_pts + repo_pts + star_pts
-
-        # Rolling decay component:
-        # We weigh recent 7d activity with highest weight, 30d with medium, older with base
-        w_7d = self.decay_weights.get("recent_7d", 1.0)
-        w_30d = self.decay_weights.get("month_30d", 0.65)
-        w_90d = self.decay_weights.get("quarter_90d", 0.35)
-        w_base = self.decay_weights.get("year_365d", 0.15)
-
-        # Recent burst score
-        recent_7d_pts = (
-            activity.recent_commits_7d * self.weights.get("commit", 1.0) +
-            activity.recent_prs_7d * self.weights.get("pull_request", 4.0)
-        )
-        # Months 8-30d only (excluding 7d)
-        commits_30d_exclusive = max(0, activity.commits_30d - activity.recent_commits_7d)
-        prs_30d_exclusive = max(0, activity.prs_30d - activity.recent_prs_7d)
-        month_30d_pts = (
-            commits_30d_exclusive * self.weights.get("commit", 1.0) +
-            prs_30d_exclusive * self.weights.get("pull_request", 4.0)
-        )
-        older_pts = max(0.0, raw_score - recent_7d_pts - month_30d_pts)
-
-        # Decay blend ensures you never drop to 0 if you worked hard in past months,
-        # but active users surge into higher energy states.
-        # Floor: at least 30% of lifetime raw score is permanently retained as draconic wisdom.
-        permanence_floor = raw_score * 0.30
-        decayed_active = (recent_7d_pts * w_7d) + (month_30d_pts * w_30d) + (older_pts * w_base)
-        decayed_score = max(permanence_floor, decayed_active)
-
-        # Streak multiplier
-        if activity.current_streak > 0:
-            streak_bonus = min(0.35, activity.current_streak * 0.02)
-            decayed_score *= (1.0 + streak_bonus)
+        # User's primary progression score is 1:1 with authentic contributions
+        base_score = float(activity.total_commits) * self.weights.get("commit", 1.0)
+        
+        # Subtle streak bonus that rewards continuous coding without jumping levels prematurely
+        streak_bonus = round(min(activity.current_streak * 0.1, 5.0), 1) if activity.current_streak > 0 else 0.0
+        
+        raw_score = round(base_score + streak_bonus, 1)
+        decayed_score = raw_score
 
         categories = {
-            "commits": commit_pts,
-            "pull_requests": pr_pts + merged_pr_pts,
-            "issues": issue_pts,
-            "repos": repo_pts,
-            "stars": star_pts,
-            "streak_days": activity.current_streak,
+            "commits": base_score,
+            "pull_requests": float(activity.total_prs),
+            "issues": float(activity.issues_opened),
+            "repos": float(activity.public_repos),
+            "stars": float(activity.total_stars),
+            "streak_days": float(activity.current_streak),
         }
 
-        return round(decayed_score, 2), round(raw_score, 2), categories
+        return decayed_score, raw_score, categories
 
     def evaluate(self, activity: GitHubActivity) -> DragonState:
         decayed_score, raw_score, categories = self.calculate_score(activity)
@@ -163,6 +127,7 @@ class EvolutionEngine:
             next_score = None
 
         # Base attributes from stage
+        is_egg = current_stage.get("is_egg", False)
         base_scale = current_stage["body_scale"]
         base_horn = current_stage["horn_level"]
         base_wing = current_stage["wing_level"]
@@ -173,44 +138,36 @@ class EvolutionEngine:
         # Feature modifications influenced by specific GitHub activities
         # 1. Commits -> Body mass & muscle maturity (fractional boost up to +0.08)
         commit_boost = min(0.08, math.log10(max(1, activity.total_commits + 1)) * 0.025)
-        final_body_scale = round(base_scale + commit_boost, 3)
+        body_scale = round(base_scale + commit_boost, 3)
 
-        # 2. PRs -> Horn development
-        pr_count = activity.total_prs + activity.merged_prs
-        horn_level = base_horn
-        if pr_count >= 10 and horn_level < 7:
-            horn_level = min(7, horn_level + 1)
-        horn_curvature = 1.0 + min(0.5, pr_count * 0.03)
+        # 2. Pull Requests -> Horn sweeps and majesty
+        pr_horn_bonus = min(2, activity.total_prs // 15)
+        horn_level = base_horn + pr_horn_bonus
+        horn_curvature = round(0.5 + min(1.0, activity.total_prs * 0.03), 2)
 
-        # 3. Merged PRs -> Armor development
-        armor_level = base_armor
-        if activity.merged_prs >= 5 and armor_level < 5:
-            armor_level = min(5, armor_level + 1)
-        armor_plates = min(6, armor_level + (1 if activity.merged_prs >= 15 else 0))
+        # 3. Merged PRs & Issues -> Carapace plating
+        armor_bonus = min(2, activity.merged_prs // 10)
+        armor_level = base_armor + armor_bonus
+        armor_plates = min(8, 2 + armor_level)
 
-        # 4. Stars -> Wing development
-        wing_level = base_wing
-        if activity.total_stars >= 10 and wing_level < 7:
-            wing_level = min(7, wing_level + 1)
-        wing_span_multiplier = 1.0 + min(0.35, math.log10(max(1, activity.total_stars + 1)) * 0.12)
+        # 4. Stars & Repositories -> Wing grandeur and tail blades
+        wing_span_mult = round(1.0 + min(0.35, (activity.total_stars * 0.01) + (activity.public_repos * 0.015)), 2)
+        wing_level = base_wing + min(2, activity.total_stars // 25)
 
-        # 5. Repos -> Tail & crest development
-        tail_level = base_tail
-        if activity.public_repos >= 8 and tail_level < 7:
-            tail_level = min(7, tail_level + 1)
-        tail_length_multiplier = 1.0 + min(0.30, activity.public_repos * 0.02)
+        tail_len_mult = round(1.0 + min(0.30, activity.public_repos * 0.02), 2)
+        tail_level = base_tail + min(2, activity.public_repos // 10)
 
-        # 6. Spikes -> based on combined PRs and stage
-        dorsal_spikes = min(9, base_spike + (1 if pr_count >= 5 else 0))
+        # 5. Spikes
+        spike_level = base_spike + min(2, (activity.total_commits // 100))
+        dorsal_spikes = min(12, 3 + spike_level)
 
-        # 7. Streak -> Aura intensity (flames/sparkles)
-        aura_intensity = 0.0
-        if activity.current_streak >= 3:
-            aura_intensity = min(1.0, 0.2 + (activity.current_streak - 3) * 0.08)
-        elif current_stage.get("aura_enabled", False):
-            aura_intensity = 0.4  # Elder dragons have innate mild aura
-
-        eye_glow = 0.3 + (current_stage["level"] * 0.1) + (aura_intensity * 0.3)
+        # 6. Contribution Streak -> Flaming Draconic Aura & Eye Glow
+        if activity.current_streak >= 3 or current_stage.get("aura_enabled", False):
+            aura_intensity = round(min(1.0, 0.4 + (activity.current_streak * 0.05)), 2)
+            eye_glow = round(min(1.0, 0.6 + (activity.current_streak * 0.04)), 2)
+        else:
+            aura_intensity = 0.0
+            eye_glow = 0.5
 
         return DragonState(
             score=decayed_score,
@@ -220,24 +177,22 @@ class EvolutionEngine:
             stage_name=current_stage["name"],
             stage_title=current_stage["title"],
             description=current_stage["description"],
-            progress_to_next=round(progress, 3),
+            progress_to_next=round(progress, 4),
             next_stage_name=next_name,
             next_stage_score=next_score,
-            sprite_file=current_stage.get("sprite_file", "06_adult.png"),
-            is_egg=current_stage.get("is_egg", False),
-            body_scale=final_body_scale,
+            is_egg=is_egg,
+            body_scale=body_scale,
             horn_level=horn_level,
             wing_level=wing_level,
-            spike_level=dorsal_spikes,
+            spike_level=spike_level,
             armor_level=armor_level,
             tail_level=tail_level,
-            aura_intensity=round(aura_intensity, 2),
-            wing_span_multiplier=round(wing_span_multiplier, 3),
-            tail_length_multiplier=round(tail_length_multiplier, 3),
-            horn_curvature=round(horn_curvature, 3),
+            aura_intensity=aura_intensity,
+            wing_span_multiplier=wing_span_mult,
+            tail_length_multiplier=tail_len_mult,
+            horn_curvature=horn_curvature,
             armor_plates=armor_plates,
             dorsal_spike_count=dorsal_spikes,
-            eye_glow=round(min(1.0, eye_glow), 2),
+            eye_glow=eye_glow,
             stats_breakdown=categories,
         )
-
