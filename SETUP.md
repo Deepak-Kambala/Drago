@@ -1,6 +1,17 @@
 # Drago Technical & Developer Setup Guide
 
-This guide covers advanced configuration, local development workflows, CLI utilities, architecture internals, and GitHub Actions permissions for **Drago**.
+## About
+
+Drago is an open-source, procedurally animated profile companion that translates GitHub activity into evolving visual assets. This document serves as the comprehensive technical reference for local developers, contributors, and advanced GitHub Actions configurations.
+
+## Description
+
+This guide covers:
+- Complete local environment installation and dependency management.
+- CLI command options (`render`, `update`, `simulate`, `preview-all`, `palettes`).
+- Schema documentation for `drago.config.json` including dimensions, frame rates, and supersampling.
+- Architecture internals across geometry, kinematics, asset rendering, and GitHub GraphQL / REST fetchers.
+- Workflow permission setup for GitHub Actions automation.
 
 ---
 

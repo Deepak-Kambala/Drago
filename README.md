@@ -11,28 +11,32 @@
 </p>
 
 <p align="center">
-  <a href="#quick-setup-2-minutes"><img src="https://img.shields.io/badge/Setup-2_Minutes-F5B700?style=flat-square" alt="Quick Setup"></a>
-  <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-2EA043?style=flat-square" alt="Evolution Stages"></a>
-  <a href="#color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-00D2FF?style=flat-square" alt="Palettes"></a>
-  <a href="SETUP.md"><img src="https://img.shields.io/badge/Technical_Docs-SETUP.md-8957E5?style=flat-square" alt="Technical Docs"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License"></a>
+  <a href="#about"><img src="https://img.shields.io/badge/About-Drago-F5B700?style=flat-square" alt="About Drago"></a>
+  <a href="#quick-setup-2-minutes"><img src="https://img.shields.io/badge/Setup-2_Minutes-2EA043?style=flat-square" alt="Quick Setup"></a>
+  <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-00D2FF?style=flat-square" alt="Evolution Stages"></a>
+  <a href="#color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-8957E5?style=flat-square" alt="Palettes"></a>
+  <a href="SETUP.md"><img src="https://img.shields.io/badge/Technical_Docs-SETUP.md-blue?style=flat-square" alt="Technical Docs"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-gray?style=flat-square" alt="License"></a>
 </p>
 
 ---
 
-## Meet Drago
+## About
 
-**Drago is not a static badge or flat image.** 
+Drago is an open-source, automated GitHub profile companion designed to bring gamification to everyday software development. Instead of static contributor charts or plain streak counters, Drago lives directly inside your GitHub profile README as an animated dragon that breathes, blinks, and evolves in real time based on your actual GitHub activity.
 
-He is an animated draconic companion designed in a cel-shaded action-adventure cartoon style who lives directly on your GitHub profile:
+---
 
-- **Deep breathing motion** with rhythmic chest and wing flexion
-- **Natural eye blinking** tracking visitors across your profile
-- **Sinuous tail sway** and ground-gripping talons
-- **Blazing energy aura** that ignites when you are on an active contribution streak
-- **Physical anatomical evolution** growing from a gentle Magma Egg into a mythical deity as you commit code
+## Description
 
-Works out of the box on GitHub with **zero JavaScript or client dependencies**.
+Drago bridges procedural animation and the GitHub Developer API into a zero-maintenance profile widget:
+
+- **Continuous Native Animation**: Features deep chest breathing, reactive eye blinking, and organic tail motion rendered natively via standard Markdown with zero client-side JavaScript.
+- **Dynamic 1:1 Progression**: Evolution Power (XP) directly mirrors your authentic contribution calendar milestones. Each commit and contribution drives your golden progress bar forward toward the next evolutionary tier.
+- **Cyberpunk HUD Status Card**: An action-game styled companion card displaying your current level, stage name, active streak, evolution power (XP), and live GitHub activity metrics (commits and pull requests).
+- **13 Evolution Tiers**: Watch your companion mature from a dormant Magma Egg into a mythical Celestial Dragon and divine Mythic Dragon as your coding journey progresses.
+- **Automated via GitHub Actions**: Runs autonomously every midnight UTC—fetching your latest activity, calculating evolution progression, rendering updated high-resolution assets, and committing them to your repository without requiring external servers.
+- **6 Cel-Shaded Palettes**: Choose from Obsidian Gold, Crimson Fury, Arctic Frost, Cyberpunk Neon, Toxic Emerald, and Solar Flare to complement your personal profile aesthetic.
 
 ---
 
