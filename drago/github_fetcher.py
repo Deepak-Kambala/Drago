@@ -24,13 +24,20 @@ query($username: String!) {
         stargazerCount
       }
     }
-    pullRequests(states: [MERGED]) {
+    allPRs: pullRequests {
+      totalCount
+    }
+    mergedPRs: pullRequests(states: [MERGED]) {
+      totalCount
+    }
+    allIssues: issues {
       totalCount
     }
     contributionsCollection {
+      contributionYears
       totalCommitContributions
+      restrictedContributionsCount
       totalPullRequestContributions
-      totalPullRequestReviewContributions
       totalIssueContributions
       totalRepositoriesWithContributedCommits
       contributionCalendar {
@@ -64,6 +71,58 @@ class GitHubFetcher:
 
         return self._fetch_rest(username)
 
+    def _search_count(self, query: str, item_type: str = "commits") -> Optional[int]:
+        """
+        Queries the GitHub Search API for precise global lifetime totals (commits, PRs, issues).
+        """
+        headers = {
+            "Accept": "application/vnd.github.v3+json",
+            "User-Agent": "Drago-GitHub-Dragon",
+        }
+        if self.token:
+            headers["Authorization"] = f"Bearer {self.token}"
+
+        url = f"https://api.github.com/search/{item_type}?q={query}"
+        req = urllib.request.Request(url, headers=headers)
+        try:
+            with urllib.request.urlopen(req, timeout=12) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                return data.get("total_count", 0)
+        except Exception:
+            return None
+
+    def _fetch_all_years_commits(self, username: str, years: List[int]) -> int:
+        """
+        Batch-fetches commit contributions across all active years via GraphQL.
+        """
+        if not years or not self.token:
+            return 0
+        try:
+            subqueries = [
+                f'y{y}: contributionsCollection(from: "{y}-01-01T00:00:00Z", to: "{y}-12-31T23:59:59Z") '
+                f'{{ totalCommitContributions restrictedContributionsCount }}'
+                for y in years
+            ]
+            query = '{\n  user(login: "' + username + '") {\n    ' + '\n    '.join(subqueries) + '\n  }\n}'
+            headers = {
+                "Authorization": f"Bearer {self.token}",
+                "Content-Type": "application/json",
+                "User-Agent": "Drago-GitHub-Dragon",
+            }
+            data = json.dumps({"query": query}).encode("utf-8")
+            req = urllib.request.Request("https://api.github.com/graphql", data=data, headers=headers)
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                res = json.loads(resp.read().decode("utf-8"))
+            user_data = res.get("data", {}).get("user", {}) or {}
+            total = 0
+            for yr_data in user_data.values():
+                if isinstance(yr_data, dict):
+                    total += yr_data.get("totalCommitContributions", 0) + yr_data.get("restrictedContributionsCount", 0)
+            return total
+        except Exception as e:
+            print(f"[Drago] Notice: Could not multi-year batch commits: {e}")
+            return 0
+
     def _fetch_graphql(self, username: str) -> GitHubActivity:
         headers = {
             "Authorization": f"Bearer {self.token}",
@@ -88,16 +147,23 @@ class GitHubFetcher:
         public_repos = repos.get("totalCount", 0)
         total_stars = sum(node.get("stargazerCount", 0) for node in repos.get("nodes", []))
 
-        # Merged PRs
-        merged_prs = user_data.get("pullRequests", {}).get("totalCount", 0)
+        # Real Lifetime PRs & Merged PRs
+        all_prs = user_data.get("allPRs", {}).get("totalCount")
+        contrib_prs = user_data.get("contributionsCollection", {}).get("totalPullRequestContributions", 0)
+        search_prs = self._search_count(f"type:pr+author:{username}", item_type="issues")
+        candidates_prs = [p for p in [all_prs, search_prs, contrib_prs] if p is not None]
+        total_prs = max(candidates_prs) if candidates_prs else 0
 
-        # Contributions
+        merged_prs = user_data.get("mergedPRs", {}).get("totalCount", 0)
+
+        # Issues
+        all_issues = user_data.get("allIssues", {}).get("totalCount")
+        contrib_issues = user_data.get("contributionsCollection", {}).get("totalIssueContributions", 0)
+        candidates_issues = [i for i in [all_issues, contrib_issues] if i is not None]
+        total_issues = max(candidates_issues) if candidates_issues else 0
+
+        # Contributions Calendar & Streaks & Windowed counts
         contribs = user_data.get("contributionsCollection", {})
-        total_commits = contribs.get("totalCommitContributions", 0)
-        total_prs = contribs.get("totalPullRequestContributions", 0)
-        total_issues = contribs.get("totalIssueContributions", 0)
-
-        # Contribution Calendar & Streaks & Time-window counts
         cal = contribs.get("contributionCalendar", {})
         weeks = cal.get("weeks", [])
         
@@ -131,7 +197,6 @@ class GitHubFetcher:
                 commits_90d += cnt
 
             # Current streak calculation
-            # Allow today to have 0 if it's early in the day, but yesterday must have > 0
             if not streak_broken:
                 if diff_days == 0 and cnt == 0:
                     continue  # Today not yet active is fine
@@ -139,6 +204,15 @@ class GitHubFetcher:
                     current_streak += 1
                 else:
                     streak_broken = True
+
+        # Real Lifetime Commits (Lifetime across all years + Search API)
+        years = contribs.get("contributionYears", [])
+        multi_year_commits = self._fetch_all_years_commits(username, years) if len(years) > 1 else 0
+        year_commits = contribs.get("totalCommitContributions", 0) + contribs.get("restrictedContributionsCount", 0)
+        search_commits = self._search_count(f"author:{username}", item_type="commits")
+
+        candidates_commits = [c for c in [multi_year_commits, year_commits, search_commits] if c is not None]
+        total_commits = max(candidates_commits) if candidates_commits else 0
 
         return GitHubActivity(
             total_commits=total_commits,
@@ -161,6 +235,7 @@ class GitHubFetcher:
     def _fetch_rest(self, username: str) -> GitHubActivity:
         """
         Fallback REST API method for unauthenticated or public requests.
+        Uses GitHub Search API for precise global lifetime metrics.
         """
         headers = {
             "Accept": "application/vnd.github.v3+json",
@@ -177,7 +252,13 @@ class GitHubFetcher:
 
         public_repos = u_info.get("public_repos", 0)
 
-        # 2. Public events (last 100 events)
+        # 2. Authentic lifetime stats via Search API
+        search_commits = self._search_count(f"author:{username}", item_type="commits")
+        search_prs = self._search_count(f"type:pr+author:{username}", item_type="issues")
+        search_merged_prs = self._search_count(f"type:pr+author:{username}+is:merged", item_type="issues")
+        search_issues = self._search_count(f"type:issue+author:{username}", item_type="issues")
+
+        # 3. Public events (last 100 events) for rolling streaks & recency
         url_events = f"https://api.github.com/users/{username}/events?per_page=100"
         req_events = urllib.request.Request(url_events, headers=headers)
         events = []
@@ -187,11 +268,11 @@ class GitHubFetcher:
         except Exception:
             events = []
 
-        commits = 0
+        event_commits = 0
         recent_7d_commits = 0
-        prs = 0
-        merged_prs = 0
-        issues = 0
+        event_prs = 0
+        event_merged_prs = 0
+        event_issues = 0
         now_dt = datetime.now(timezone.utc)
         active_days = set()
 
@@ -204,18 +285,18 @@ class GitHubFetcher:
 
             if ev_type == "PushEvent":
                 c_cnt = len(ev.get("payload", {}).get("commits", [1]))
-                commits += c_cnt
+                event_commits += c_cnt
                 if is_recent_7d:
                     recent_7d_commits += c_cnt
             elif ev_type == "PullRequestEvent":
                 action = ev.get("payload", {}).get("action")
-                prs += 1
+                event_prs += 1
                 if action == "closed" and ev.get("payload", {}).get("pull_request", {}).get("merged", False):
-                    merged_prs += 1
+                    event_merged_prs += 1
             elif ev_type == "IssuesEvent":
-                issues += 1
+                event_issues += 1
 
-        # 3. Public repos for stars
+        # 4. Public repos for stars
         url_repos = f"https://api.github.com/users/{username}/repos?per_page=100"
         req_repos = urllib.request.Request(url_repos, headers=headers)
         total_stars = 0
@@ -226,24 +307,26 @@ class GitHubFetcher:
         except Exception:
             pass
 
-        # Estimate base lifetime commits from account age and public repos if events only has 100 items
-        est_commits = max(commits, public_repos * 15 + commits)
+        # Final resolved numbers (prefer accurate global search, fall back to events)
+        final_commits = search_commits if search_commits is not None else event_commits
+        final_prs = search_prs if search_prs is not None else event_prs
+        final_merged_prs = search_merged_prs if search_merged_prs is not None else event_merged_prs
+        final_issues = search_issues if search_issues is not None else event_issues
 
         return GitHubActivity(
-            total_commits=est_commits,
+            total_commits=final_commits,
             recent_commits_7d=recent_7d_commits,
-            commits_30d=commits,
-            commits_90d=commits * 2,
-            total_prs=max(prs, int(public_repos * 1.5)),
-            recent_prs_7d=prs,
-            prs_30d=prs,
-            merged_prs=max(merged_prs, int(prs * 0.7)),
-            issues_opened=issues,
-            issues_closed=int(issues * 0.6),
+            commits_30d=event_commits,
+            commits_90d=event_commits * 2,
+            total_prs=final_prs,
+            recent_prs_7d=max(0, int(round(final_prs * 0.15))),
+            prs_30d=max(0, int(round(final_prs * 0.35))),
+            merged_prs=final_merged_prs,
+            issues_opened=final_issues,
+            issues_closed=int(round(final_issues * 0.7)),
             public_repos=public_repos,
             total_stars=total_stars,
             current_streak=len(active_days),
             longest_streak=len(active_days),
             raw_data={"source": "rest", "username": username},
         )
-
