@@ -17,9 +17,14 @@ class SpriteAnimator:
     def __init__(self, config: DragoConfig, state: DragonState):
         self.config = config
         self.state = state
-        self.sprite_path = os.path.join("assets", "sprites", getattr(state, "sprite_file", "06_adult.png"))
-        
-        # Load and cache original sprite
+        sprite_filename = getattr(state, "sprite_file", None)
+        if not sprite_filename:
+            from drago.config import STAGE_DEFINITIONS
+            lvl = getattr(state, "stage_level", 1)
+            stage_idx = max(0, min(len(STAGE_DEFINITIONS) - 1, lvl - 1))
+            sprite_filename = STAGE_DEFINITIONS[stage_idx].get("sprite_file", f"{lvl:02d}_{getattr(state, 'stage_id', 'dragon')}.png")
+
+        self.sprite_path = os.path.join("assets", "sprites", sprite_filename)
         if not os.path.exists(self.sprite_path):
             self.sprite_path = os.path.join("assets", "sprites", "06_adult.png")
 

@@ -46,6 +46,7 @@ class DragonState:
     next_stage_name: Optional[str]
     next_stage_score: Optional[int]
     is_egg: bool = False
+    sprite_file: str = "01_egg.png"
     
     # Anatomical feature levels (1.0 to 7.0+ continuous or discrete)
     body_scale: float = 1.0
@@ -128,6 +129,7 @@ class EvolutionEngine:
 
         # Base attributes from stage
         is_egg = current_stage.get("is_egg", False)
+        sprite_file = current_stage.get("sprite_file", f"{current_stage['level']:02d}_{current_stage['id']}.png")
         base_scale = current_stage["body_scale"]
         base_horn = current_stage["horn_level"]
         base_wing = current_stage["wing_level"]
@@ -181,6 +183,7 @@ class EvolutionEngine:
             next_stage_name=next_name,
             next_stage_score=next_score,
             is_egg=is_egg,
+            sprite_file=sprite_file,
             body_scale=body_scale,
             horn_level=horn_level,
             wing_level=wing_level,
