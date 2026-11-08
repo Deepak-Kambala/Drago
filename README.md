@@ -12,7 +12,8 @@
 
 <p align="center">
   <a href="#about"><img src="https://img.shields.io/badge/About-Drago-F5B700?style=flat-square" alt="About Drago"></a>
-  <a href="#quick-setup-2-minutes"><img src="https://img.shields.io/badge/Setup-2_Minutes-2EA043?style=flat-square" alt="Quick Setup"></a>
+  <a href="#quick-setup-60-seconds"><img src="https://img.shields.io/badge/Setup-60_Seconds-2EA043?style=flat-square" alt="Quick Setup"></a>
+  <a href="#how-it-works"><img src="https://img.shields.io/badge/Architecture-Autonomous-orange?style=flat-square" alt="Autonomous"></a>
   <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-00D2FF?style=flat-square" alt="Evolution Stages"></a>
   <a href="#color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-8957E5?style=flat-square" alt="Palettes"></a>
   <a href="SETUP.md"><img src="https://img.shields.io/badge/Technical_Docs-SETUP.md-blue?style=flat-square" alt="Technical Docs"></a>
@@ -35,54 +36,45 @@ Drago bridges procedural animation and the GitHub Developer API into a zero-main
 - **Dynamic 1:1 Progression**: Evolution Power (XP) directly mirrors your authentic contribution calendar milestones. Each commit and contribution drives your golden progress bar forward toward the next evolutionary tier.
 - **Cyberpunk HUD Status Card**: An action-game styled companion card displaying your current level, stage name, active streak, evolution power (XP), and live GitHub activity metrics (commits and pull requests).
 - **13 Evolution Tiers**: Watch your companion mature from a dormant Magma Egg into a mythical Celestial Dragon and divine Mythic Dragon as your coding journey progresses.
-- **Automated via GitHub Actions**: Runs autonomously every midnight UTC—fetching your latest activity, calculating evolution progression, rendering updated high-resolution assets, and committing them to your repository without requiring external servers.
+- **Autonomous Updates via GitHub Actions**: Runs autonomously every midnight UTC inside your own repository, fetching your latest activity, calculating evolution progression, rendering updated high-resolution assets, and committing them without requiring external servers.
 - **6 Cel-Shaded Palettes**: Choose from Obsidian Gold, Crimson Fury, Arctic Frost, Cyberpunk Neon, Toxic Emerald, and Solar Flare to complement your personal profile aesthetic.
 
 ---
 
-## Quick Setup (2 Minutes)
+## Quick Setup (60 Seconds)
 
-Add Drago to your GitHub Profile README in two simple steps:
+Add Drago to your GitHub Profile README in four simple steps:
 
 ### Option A: The Easy Fork Way (Recommended)
 
-1. **Fork this repository** to your GitHub account (name it `drago`).
-2. **Enable GitHub Actions**:
-   - In your forked repo, go to **Settings** $\rightarrow$ **Actions** $\rightarrow$ **General**.
+1. **Fork this repository** to your GitHub account (keep the default name `drago`).
+2. **Enable Workflow Write Permissions**:
+   - In your forked repository, go to **Settings** > **Actions** > **General**.
    - Under **Workflow permissions**, choose **Read and write permissions** and click **Save**.
-   - Go to the **Actions** tab and click **I understand my workflows, go ahead and enable them**.
-3. **Embed in your Profile README** (`<username>/<username>`):
-   Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your actual GitHub username, e.g. `Deepak-Kambala`):
+3. **Enable GitHub Actions**:
+   - Go to the **Actions** tab in your repository.
+   - Click the green button: **I understand my workflows, go ahead and enable them**.
+   - (Optional) Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and run it once to immediately generate your assets.
+4. **Embed in your Profile README** (`<username>/<username>`):
+   Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username, e.g. `Deepak-Kambala`):
 
 ```markdown
 <p align="center">
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/Drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
   <br>
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/Drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
 </p>
 ```
-
-> [!TIP]
-> **Example for `@Deepak-Kambala`:**
-> ```markdown
-> <p align="center">
->   <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
->   <br>
->   <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
-> </p>
-> ```
-
-That's it! GitHub Actions automatically runs daily at midnight UTC to evaluate your commits, PRs, and streaks, continuously evolving your dragon.
 
 ---
 
 ### Option B: Directly Inside Your Profile Repository
 
-If you prefer keeping everything in your `<username>/<username>` profile repository:
+If you prefer keeping everything consolidated inside your existing `<username>/<username>` profile repository:
 
-1. Copy the `drago/`, `.github/`, and `drago.config.json` folders into your profile repository.
-2. In your profile repo settings, ensure **Read and write permissions** are enabled for Actions (**Settings $\rightarrow$ Actions $\rightarrow$ General $\rightarrow$ Workflow permissions**).
-3. Add this snippet to your `README.md`:
+1. Copy the `drago/`, `.github/`, and `drago.config.json` files directly into your profile repository root.
+2. Ensure **Read and write permissions** are enabled (**Settings** > **Actions** > **General** > **Workflow permissions**).
+3. Add this relative snippet to your `README.md`:
 
 ```markdown
 <p align="center">
@@ -91,6 +83,16 @@ If you prefer keeping everything in your `<username>/<username>` profile reposit
   <img src="./assets/dragon-status.svg" width="650" alt="Drago Status Card">
 </p>
 ```
+
+---
+
+## How It Works
+
+Drago is designed to be completely autonomous and self-sustaining:
+
+- **Independent Execution**: When you fork Drago, the GitHub Actions workflow executes entirely on GitHub's free runners under your account. It evaluates `github.repository_owner`, meaning it always calculates data for the owner of the fork.
+- **No Third-Party Servers**: There are no external servers, databases, or API quotas to manage. Your assets live directly in your Git repository.
+- **Daily Automated Cycles**: Every midnight UTC, the workflow fetches your authentic contribution calendar, recalculates your XP and level, re-renders the companion animation and status card, and commits the updated assets directly to your `main` branch.
 
 ---
 
@@ -129,19 +131,19 @@ Drago's physical traits reflect your actual development habits:
 | **Commits** | Increases overall body mass and muscular maturity |
 | **Pull Requests** | Grows sweeping horns and dorsal armor plates |
 | **Merged PRs** | Reinforces chest carapaces and shoulder guards |
-| **Contribution Streak** | Ignites an active fiery energy aura |
+| **Contribution Streak** | Ignites an active fiery energy aura (streak 3+ days) |
 | **Stars & Repositories** | Expands wingspan and elongates the bladed tail |
 
-### Gentle Rolling Decay
-- **Recent activity (0–7 days)** provides maximum energy and power.
-- **Monthly contributions (8–30 days)** sustain body mass and wing structures.
-- **Lifetime wisdom**: 30% of all contributions become permanent experience that never decays, so taking a break will never reset your dragon.
+### XP & Level Progression
+- **1:1 Contribution Mapping**: Each contribution on your GitHub calendar grants 1.0 XP.
+- **Streak Bonus**: Each consecutive day in your active streak grants an additional 0.1 XP (up to 5.0 XP bonus).
+- **Smooth Progress Bar**: The golden progress bar on your status card fills proportionally between your current level and the next tier, advancing with every commit and contribution.
 
 ---
 
 ## Color Palettes
 
-Choose the skin that matches your profile's aesthetic:
+Choose the skin that matches your profile aesthetic:
 
 - **Obsidian Gold** *(Default)*: Charcoal obsidian body `#1E1F24` with racing gold accents `#F5B700` and amber eyes.
 - **Crimson Fury**: Deep scarlet charcoal `#2D0F14` with blazing crimson accents `#FF2A4D`.
