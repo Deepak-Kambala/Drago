@@ -47,6 +47,10 @@ Add your evolving dragon to your GitHub Profile README in four quick steps:
 </p>
 ```
 
+> [!IMPORTANT]
+> **Do not open a Pull Request back to this repository.** Your forked repository is completely independent. Once Actions runs in your fork, your assets are already live in your repository and ready to display.
+
+
 ---
 
 ### Option B: Directly Inside Your Profile Repository
