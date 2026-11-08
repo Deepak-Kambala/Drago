@@ -176,44 +176,42 @@ class SpriteAnimator:
         """
         warped_sprite = self.warp_frame(t, action=action)
         canvas = Image.new("RGBA", (width, height), (13, 17, 23, 255))
-        draw = ImageDraw.Draw(canvas)
+        
+        # 1. True Alpha-blended Ambient Amber Glow behind dragon
+        glow_layer = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+        glow_draw = ImageDraw.Draw(glow_layer)
 
         palette = self.config.get_palette()
-        accent = palette.get("accent", "#F5B700")
+        accent = palette.get("accent", "#FCB42B")
 
-        # 1. Atmospheric Ambient Radial Glow behind dragon
         cx, cy = width * 0.48, height * 0.54
         r_mult = 1.0 + (self.state.stage_level / 13.0) * 0.35
-        glow_alpha = int(22 + (self.state.stage_level / 13.0) * 35)
+        glow_alpha = int(24 + (self.state.stage_level / 13.0) * 35)
 
         for r_step in range(6, 0, -1):
             rx = (width * 0.34 * r_mult) * (r_step / 6.0)
-            ry = (height * 0.30 * r_mult) * (r_step / 6.0)
+            ry = (height * 0.28 * r_mult) * (r_step / 6.0)
             step_alpha = int(glow_alpha * (1.0 - (r_step / 6.0) * 0.75))
-            draw.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(245, 183, 0, step_alpha))
+            glow_draw.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(252, 180, 43, step_alpha))
 
-        # 2. Optimal Scaling to fill canvas heroically (keeping pixel sharpness)
-        # Target height ~280-320px
-        target_h = min(height * 0.82, max(220, self.orig_h * 1.85))
+        # 2. Contact Shadow under feet
+        glow_draw.ellipse([80, int(height * 0.88 - 14), width - 80, int(height * 0.88 + 14)], fill=(5, 6, 8, 170))
+
+        # Composite glow and shadow onto background
+        canvas = Image.alpha_composite(canvas, glow_layer)
+
+        # 3. Optimal Scaling for crystal-clear fidelity
+        target_h = int(height * 0.86)
         scale_factor = target_h / self.orig_h
         scaled_w = int(round(self.orig_w * scale_factor))
         scaled_h = int(round(self.orig_h * scale_factor))
 
         scaled_sprite = warped_sprite.resize((scaled_w, scaled_h), Image.Resampling.LANCZOS)
 
-        # 3. Contact Shadow under feet
-        shadow_w = scaled_w * 0.65
-        shadow_h = 24
-        shadow_x = (width - shadow_w) // 2
-        shadow_y = int(height * 0.88 - shadow_h // 2)
-        draw.ellipse(
-            [shadow_x, shadow_y, shadow_x + shadow_w, shadow_y + shadow_h],
-            fill=(6, 8, 11, 140)
-        )
-
-        # 4. Paste Dragon Sprite
+        # 4. Paste Dragon Sprite centered
         px = (width - scaled_w) // 2
         py = int(height * 0.88) - scaled_h + 8
         canvas.alpha_composite(scaled_sprite, (px, py))
 
         return canvas
+

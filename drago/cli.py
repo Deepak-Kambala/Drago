@@ -48,15 +48,15 @@ def cmd_render(args):
     if args.stage:
         stage_idx = max(0, min(len(STAGE_DEFINITIONS) - 1, int(args.stage) - 1))
         st_def = STAGE_DEFINITIONS[stage_idx]
-        target_score = st_def["min_score"] + (25 if st_def["min_score"] > 0 else 5)
+        target_score = st_def["min_score"] + (10 if st_def["min_score"] > 0 else 5)
         activity = GitHubActivity(
-            total_commits=int(target_score * 1.5),
-            recent_commits_7d=int(target_score),
-            commits_30d=int(target_score),
-            total_prs=int(10 + stage_idx * 5),
-            merged_prs=int(5 + stage_idx * 4),
-            public_repos=int(4 + stage_idx * 2),
-            total_stars=int(10 + stage_idx * 30),
+            total_commits=target_score,
+            recent_commits_7d=target_score,
+            commits_30d=target_score,
+            total_prs=int(stage_idx * 2),
+            merged_prs=int(stage_idx),
+            public_repos=int(1 + stage_idx),
+            total_stars=int(stage_idx * 5),
             current_streak=7 if st_def.get("aura_enabled", False) else 2,
         )
     else:
@@ -107,16 +107,16 @@ def cmd_preview_all(args):
     strip_images = []
     
     for i, st_def in enumerate(STAGE_DEFINITIONS):
-        target_score = st_def["min_score"] + (25 if st_def["min_score"] > 0 else 5)
+        target_score = st_def["min_score"] + (10 if st_def["min_score"] > 0 else 5)
         activity = GitHubActivity(
-            total_commits=int(target_score * 1.5),
-            recent_commits_7d=int(target_score),
-            commits_30d=int(target_score),
-            total_prs=int(10 + i * 5),
-            merged_prs=int(5 + i * 4),
-            public_repos=int(4 + i * 2),
-            total_stars=int(10 + i * 35),
-            current_streak=10 if st_def.get("aura_enabled", False) else 2,
+            total_commits=target_score,
+            recent_commits_7d=target_score,
+            commits_30d=target_score,
+            total_prs=int(i * 2),
+            merged_prs=int(i),
+            public_repos=int(1 + i),
+            total_stars=int(i * 5),
+            current_streak=7 if st_def.get("aura_enabled", False) else 2,
         )
         state = engine.evaluate(activity)
         out_path = f"{preview_dir}/stage_{i+1}_{st_def['id']}.gif"

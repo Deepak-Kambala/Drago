@@ -102,9 +102,12 @@ class EvolutionEngine:
             activity.recent_commits_7d * self.weights.get("commit", 1.0) +
             activity.recent_prs_7d * self.weights.get("pull_request", 4.0)
         )
+        # Months 8-30d only (excluding 7d)
+        commits_30d_exclusive = max(0, activity.commits_30d - activity.recent_commits_7d)
+        prs_30d_exclusive = max(0, activity.prs_30d - activity.recent_prs_7d)
         month_30d_pts = (
-            activity.commits_30d * self.weights.get("commit", 1.0) +
-            activity.prs_30d * self.weights.get("pull_request", 4.0)
+            commits_30d_exclusive * self.weights.get("commit", 1.0) +
+            prs_30d_exclusive * self.weights.get("pull_request", 4.0)
         )
         older_pts = max(0.0, raw_score - recent_7d_pts - month_30d_pts)
 
