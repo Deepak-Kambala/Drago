@@ -1,0 +1,85 @@
+name: Drago Evolution Update
+
+on:
+  schedule:
+    # Runs daily at midnight UTC to recalculate rolling decay, streaks, and evolution
+    - cron: "0 0 * * *"
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "assets/**"
+      - "README.md"
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - "assets/**"
+      - "README.md"
+  workflow_dispatch:
+    inputs:
+      username:
+        description: "GitHub username to evaluate (leave blank for repository owner)"
+        required: false
+        default: ""
+      force_stage:
+        description: "Force specific evolution stage (1-7, leave blank for auto)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  evolve:
+    name: Evolve Dragon
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow numpy
+
+      - name: Update Dragon Evolution & Assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TARGET_USER="${{ github.event.inputs.username || github.repository_owner }}"
+          echo "Evaluating GitHub activity for: $TARGET_USER"
+          
+          if [ -n "${{ github.event.inputs.force_stage }}" ]; then
+            python -m drago.cli render --stage "${{ github.event.inputs.force_stage }}" --output assets/dragon.gif
+          else
+            python -m drago.cli update --username "$TARGET_USER" --token "$GITHUB_TOKEN"
+          fi
+
+      - name: Commit and Push Evolution Updates
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Check if assets were updated
+          if [ -n "$(git status --porcelain assets/)" ]; then
+            STAGE_NAME="Evolved Dragon"
+            if [ -f "assets/drago-state.json" ]; then
+              STAGE_NAME=$(python -c "import json; d=json.load(open('assets/drago-state.json')); print(f'Level {d[\"stage_level\"]}: {d[\"stage_name\"]}')" 2>/dev/null || echo "Evolved Dragon")
+            fi
+            
+            git add assets/
+            git commit -m "🐉 Drago: Evolve dragon to $STAGE_NAME [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+            echo "Successfully committed and pushed evolved dragon assets!"
+          else
+            echo "No evolution changes detected in this cycle."
+          fi

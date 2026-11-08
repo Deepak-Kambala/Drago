@@ -1,0 +1,23 @@
+{
+  "username": "octocat",
+  "palette_name": "obsidian-gold",
+  "species": "action-dragon",
+  "fps": 12,
+  "frame_count": 24,
+  "width": 650,
+  "height": 420,
+  "supersample": 2,
+  "background": "github-dark",
+  "show_status_card": true,
+  "output_path": "assets/dragon.gif",
+  "status_card_path": "assets/dragon-status.svg",
+  "weights": {
+    "commit": 1.0,
+    "pull_request": 4.0,
+    "merged_pr": 6.0,
+    "issue": 2.0,
+    "repo": 5.0,
+    "star_received": 1.5,
+    "streak_multiplier": 1.2
+  }
+}

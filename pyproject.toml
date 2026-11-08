@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drago"
+version = "1.0.0"
+description = "Animated cartoon dragon living inside your GitHub README, evolving with your GitHub activity."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Drago Team" }]
+dependencies = [
+    "pillow>=10.0.0",
+    "numpy>=1.24.0",
+]
+
+[project.scripts]
+drago = "drago.cli:main"
