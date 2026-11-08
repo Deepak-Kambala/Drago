@@ -32,14 +32,14 @@
 
     <!-- XP & Percentage -->
     <text x="602" y="15" fill="#C9D1D9" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="600" text-anchor="end">
-      <tspan fill="#F5B700">304.0</tspan> XP <tspan fill="#8B949E" font-weight="400">(2%)</tspan>
+      <tspan fill="#F5B700">305.3</tspan> XP <tspan fill="#8B949E" font-weight="400">(3%)</tspan>
     </text>
   </g>
 
   <!-- Full-Width Sleek Progress Bar -->
   <g transform="translate(24, 48)">
     <rect x="0" y="0" width="602" height="6" rx="3" fill="#21262D" />
-    <rect x="0" y="0" width="12" height="6" rx="3" fill="url(#barGrad)" filter="url(#glow)" />
+    <rect x="0" y="0" width="16" height="6" rx="3" fill="url(#barGrad)" filter="url(#glow)" />
   </g>
 
   <!-- Bottom Useful Metrics Row -->
@@ -50,11 +50,11 @@
 
     <!-- Evolution Power -->
     <text x="140" y="0" fill="#8B949E" font-size="10" font-weight="600" letter-spacing="0.5">EVOLUTION POWER</text>
-    <text x="140" y="16" fill="#F5B700" font-size="13" font-weight="700">⚡ 304.0</text>
+    <text x="140" y="16" fill="#F5B700" font-size="13" font-weight="700">⚡ 305.3</text>
 
     <!-- Commits -->
     <text x="290" y="0" fill="#8B949E" font-size="10" font-weight="600" letter-spacing="0.5">COMMITS</text>
-    <text x="290" y="16" fill="#F0F6FC" font-size="13" font-weight="700">💻 120</text>
+    <text x="290" y="16" fill="#F0F6FC" font-size="13" font-weight="700">💻 121</text>
 
     <!-- Pull Requests -->
     <text x="430" y="0" fill="#8B949E" font-size="10" font-weight="600" letter-spacing="0.5">PULL REQUESTS</text>
