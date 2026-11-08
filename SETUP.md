@@ -217,3 +217,4 @@ Ensure you have enabled **Read and write permissions** under **Repository Settin
 
 ### Can I run Drago for private contributions?
 Yes! In your GitHub profile settings (**Public profile**), check **Include private contributions on my profile**. Additionally, you can pass a Personal Access Token (`PAT`) with the `repo` scope to the workflow.
+

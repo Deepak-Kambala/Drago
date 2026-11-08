@@ -48,15 +48,25 @@ Add Drago to your GitHub Profile README in two simple steps:
    - Under **Workflow permissions**, choose **Read and write permissions** and click **Save**.
    - Go to the **Actions** tab and click **I understand my workflows, go ahead and enable them**.
 3. **Embed in your Profile README** (`<username>/<username>`):
-   Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username):
+   Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your actual GitHub username, e.g. `Deepak-Kambala`):
 
 ```markdown
 <p align="center">
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/Drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
   <br>
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/Drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
 </p>
 ```
+
+> [!TIP]
+> **Example for `@Deepak-Kambala`:**
+> ```markdown
+> <p align="center">
+>   <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/dragon.gif" width="650" alt="My Evolving Dragon">
+>   <br>
+>   <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/dragon-status.svg" width="650" alt="Drago Status Card">
+> </p>
+> ```
 
 That's it! GitHub Actions automatically runs daily at midnight UTC to evaluate your commits, PRs, and streaks, continuously evolving your dragon.
 
