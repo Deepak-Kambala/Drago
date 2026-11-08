@@ -11,10 +11,10 @@
 </p>
 
 <p align="center">
-  <a href="#about"><img src="https://img.shields.io/badge/About-Drago-F5B700?style=flat-square" alt="About Drago"></a>
   <a href="#quick-setup-60-seconds"><img src="https://img.shields.io/badge/Setup-60_Seconds-2EA043?style=flat-square" alt="Quick Setup"></a>
-  <a href="#how-it-works"><img src="https://img.shields.io/badge/Architecture-Autonomous-orange?style=flat-square" alt="Autonomous"></a>
   <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-00D2FF?style=flat-square" alt="Evolution Stages"></a>
+  <a href="#about"><img src="https://img.shields.io/badge/About-Drago-F5B700?style=flat-square" alt="About Drago"></a>
+  <a href="#how-it-works"><img src="https://img.shields.io/badge/Architecture-Autonomous-orange?style=flat-square" alt="Autonomous"></a>
   <a href="#color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-8957E5?style=flat-square" alt="Palettes"></a>
   <a href="SETUP.md"><img src="https://img.shields.io/badge/Technical_Docs-SETUP.md-blue?style=flat-square" alt="Technical Docs"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-gray?style=flat-square" alt="License"></a>
@@ -22,28 +22,9 @@
 
 ---
 
-## About
-
-Drago is an open-source, automated GitHub profile companion designed to bring gamification to everyday software development. Instead of static contributor charts or plain streak counters, Drago lives directly inside your GitHub profile README as an animated dragon that breathes, blinks, and evolves in real time based on your actual GitHub activity.
-
----
-
-## Description
-
-Drago bridges procedural animation and the GitHub Developer API into a zero-maintenance profile widget:
-
-- **Continuous Native Animation**: Features deep chest breathing, reactive eye blinking, and organic tail motion rendered natively via standard Markdown with zero client-side JavaScript.
-- **Dynamic 1:1 Progression**: Evolution Power (XP) directly mirrors your authentic contribution calendar milestones. Each commit and contribution drives your golden progress bar forward toward the next evolutionary tier.
-- **Cyberpunk HUD Status Card**: An action-game styled companion card displaying your current level, stage name, active streak, evolution power (XP), and live GitHub activity metrics (commits and pull requests).
-- **13 Evolution Tiers**: Watch your companion mature from a dormant Magma Egg into a mythical Celestial Dragon and divine Mythic Dragon as your coding journey progresses.
-- **Autonomous Updates via GitHub Actions**: Runs autonomously every midnight UTC inside your own repository, fetching your latest activity, calculating evolution progression, rendering updated high-resolution assets, and committing them without requiring external servers.
-- **6 Cel-Shaded Palettes**: Choose from Obsidian Gold, Crimson Fury, Arctic Frost, Cyberpunk Neon, Toxic Emerald, and Solar Flare to complement your personal profile aesthetic.
-
----
-
 ## Quick Setup (60 Seconds)
 
-Add Drago to your GitHub Profile README in four simple steps:
+Add your evolving dragon to your GitHub Profile README in four quick steps:
 
 ### Option A: The Easy Fork Way (Recommended)
 
@@ -54,7 +35,7 @@ Add Drago to your GitHub Profile README in four simple steps:
 3. **Enable GitHub Actions**:
    - Go to the **Actions** tab in your repository.
    - Click the green button: **I understand my workflows, go ahead and enable them**.
-   - (Optional) Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and run it once to immediately generate your assets.
+   - (Optional) Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and run it once to immediately generate your initial assets.
 4. **Embed in your Profile README** (`<username>/<username>`):
    Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username, e.g. `Deepak-Kambala`):
 
@@ -74,7 +55,7 @@ If you prefer keeping everything consolidated inside your existing `<username>/<
 
 1. Copy the `drago/`, `.github/`, and `drago.config.json` files directly into your profile repository root.
 2. Ensure **Read and write permissions** are enabled (**Settings** > **Actions** > **General** > **Workflow permissions**).
-3. Add this relative snippet to your `README.md`:
+3. Add this relative snippet to your profile `README.md`:
 
 ```markdown
 <p align="center">
@@ -83,16 +64,6 @@ If you prefer keeping everything consolidated inside your existing `<username>/<
   <img src="./assets/dragon-status.svg" width="650" alt="Drago Status Card">
 </p>
 ```
-
----
-
-## How It Works
-
-Drago is designed to be completely autonomous and self-sustaining:
-
-- **Independent Execution**: When you fork Drago, the GitHub Actions workflow executes entirely on GitHub's free runners under your account. It evaluates `github.repository_owner`, meaning it always calculates data for the owner of the fork.
-- **No Third-Party Servers**: There are no external servers, databases, or API quotas to manage. Your assets live directly in your Git repository.
-- **Daily Automated Cycles**: Every midnight UTC, the workflow fetches your authentic contribution calendar, recalculates your XP and level, re-renders the companion animation and status card, and commits the updated assets directly to your `main` branch.
 
 ---
 
@@ -119,6 +90,35 @@ Drago progresses through **13 distinct evolutionary forms** based on your GitHub
 <p align="center">
   <img src="./assets/evolution_showcase.png" width="700" alt="Drago 13-Phase Evolution Showcase Grid">
 </p>
+
+---
+
+## About
+
+Drago is an open-source, automated GitHub profile companion designed to bring gamification to everyday software development. Instead of static contributor charts or plain streak counters, Drago lives directly inside your GitHub profile README as an animated dragon that breathes, blinks, and evolves in real time based on your actual GitHub activity.
+
+---
+
+## Description
+
+Drago bridges procedural animation and the GitHub Developer API into a zero-maintenance profile widget:
+
+- **Continuous Native Animation**: Features deep chest breathing, reactive eye blinking, and organic tail motion rendered natively via standard Markdown with zero client-side JavaScript.
+- **Dynamic 1:1 Progression**: Evolution Power (XP) directly mirrors your authentic contribution calendar milestones. Each commit and contribution drives your golden progress bar forward toward the next evolutionary tier.
+- **Cyberpunk HUD Status Card**: An action-game styled companion card displaying your current level, stage name, active streak, evolution power (XP), and live GitHub activity metrics (commits and pull requests).
+- **13 Evolution Tiers**: Watch your companion mature from a dormant Magma Egg into a mythical Celestial Dragon and divine Mythic Dragon as your coding journey progresses.
+- **Autonomous Updates via GitHub Actions**: Runs autonomously every midnight UTC inside your own repository, fetching your latest activity, calculating evolution progression, rendering updated high-resolution assets, and committing them without requiring external servers.
+- **6 Cel-Shaded Palettes**: Choose from Obsidian Gold, Crimson Fury, Arctic Frost, Cyberpunk Neon, Toxic Emerald, and Solar Flare to complement your personal profile aesthetic.
+
+---
+
+## How It Works
+
+Drago is designed to be completely autonomous and self-sustaining:
+
+- **Independent Execution**: When you fork Drago, the GitHub Actions workflow executes entirely on GitHub's free runners under your account. It evaluates `github.repository_owner`, meaning it always calculates data for the owner of the fork.
+- **No Third-Party Servers**: There are no external servers, databases, or API quotas to manage. Your assets live directly in your Git repository.
+- **Daily Automated Cycles**: Every midnight UTC, the workflow fetches your authentic contribution calendar, recalculates your XP and level, re-renders the companion animation and status card, and commits the updated assets directly to your `main` branch.
 
 ---
 
