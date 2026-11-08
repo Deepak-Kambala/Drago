@@ -56,6 +56,8 @@ class SpriteAnimator:
             return (int(w * 0.836), int(h * 0.304))  # ~ (800, 231) for 957x760
         if '06_adult' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 6:
             return (int(w * 0.806), int(h * 0.300))  # ~ (825, 205) for 1024x682
+        if '07_mature' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 7:
+            return (int(w * 0.864), int(h * 0.321))  # ~ (824, 227) for 954x707
 
         # Head is generally in upper-right quadrant
         head_region = arr[:int(h * 0.55), int(w * 0.55):]
