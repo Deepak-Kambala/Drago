@@ -20,6 +20,16 @@
 
 ---
 
+## 🥚 Phase 1 Spotlight: The Magma Dragon Egg
+
+Every developer's journey begins with the **Dormant Dragon Egg** (`0 – 9 XP`). As your GitHub commits and pull requests begin, the egg awakens with inertial rocking and internal magma pulses:
+
+<p align="center">
+  <img src="./assets/egg.gif" width="400" alt="Drago Stage 1 - Animated Magma Dragon Egg">
+</p>
+
+---
+
 ## 🐉 The Drago Experience
 
 **Drago is not a static dragon image.** 
@@ -79,6 +89,10 @@ Drago progresses through **13 authentic evolutionary phases**, matching your Git
 | **11** | **Dragon Lord** | `2500 – 2999` | Sovereign golden wings, shoulder star emblems, ground-tremoring talons | <img src="./assets/previews/stage_11_dragon_lord.gif" width="130"> |
 | **12** | **Celestial Dragon** | `3000 – 3999` | Radiant cosmic wings, floating star crystals, and celestial energy flames | <img src="./assets/previews/stage_12_celestial_dragon.gif" width="130"> |
 | **13** | **Mythic Dragon** | `4000+` | Omnipotent form: blazing cosmic aura rings, orbiting energy crystals, divine flame | <img src="./assets/previews/stage_13_mythic_dragon.gif" width="130"> |
+
+<p align="center">
+  <img src="./assets/evolution_showcase.png" width="700" alt="Drago 13-Phase Evolution Showcase Grid">
+</p>
 
 ---
 
