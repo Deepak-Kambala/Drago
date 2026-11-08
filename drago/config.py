@@ -310,3 +310,4 @@ class DragoConfig:
         if self.custom_palette:
             base.update(self.custom_palette)
         return base
+

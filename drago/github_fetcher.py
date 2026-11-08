@@ -246,3 +246,4 @@ class GitHubFetcher:
             longest_streak=len(active_days),
             raw_data={"source": "rest", "username": username},
         )
+

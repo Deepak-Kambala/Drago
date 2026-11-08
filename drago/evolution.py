@@ -231,3 +231,4 @@ class EvolutionEngine:
             eye_glow=round(min(1.0, eye_glow), 2),
             stats_breakdown=categories,
         )
+

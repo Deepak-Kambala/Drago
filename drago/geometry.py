@@ -138,3 +138,4 @@ def draw_ribbon(
     # Join left going forward and right going backward to form closed polygon
     poly = left_pts + list(reversed(right_pts))
     draw_polygon_with_outline(draw, poly, fill_color, outline_color, outline_width)
+

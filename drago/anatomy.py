@@ -976,3 +976,4 @@ class DragonAnatomy:
                 (k_x - 15 * self.ss * scale, k_y + 8 * self.ss * scale),
             ]
             draw_polygon_with_outline(draw, knee_plate, self.c_armor, self.c_ink, self.line_w_thin)
+

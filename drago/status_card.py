@@ -87,3 +87,4 @@ def generate_status_svg(state: DragonState, activity: GitHubActivity, config: Dr
         f.write(svg.strip())
 
     return output_path
+
