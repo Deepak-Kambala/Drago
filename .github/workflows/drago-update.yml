@@ -77,7 +77,7 @@ jobs:
             fi
             
             git add assets/
-            git commit -m "🐉 Drago: Evolve dragon to $STAGE_NAME [skip ci]"
+            git commit -m "Drago: Evolve dragon to $STAGE_NAME [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
             echo "Successfully committed and pushed evolved dragon assets!"
           else

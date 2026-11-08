@@ -11,32 +11,32 @@
 </p>
 
 <p align="center">
-  <a href="#-quick-setup-2-minutes"><img src="https://img.shields.io/badge/Setup-2_Minutes-F5B700?style=flat-square" alt="Quick Setup"></a>
-  <a href="#-evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-2EA043?style=flat-square" alt="Evolution Stages"></a>
-  <a href="#-color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-00D2FF?style=flat-square" alt="Palettes"></a>
+  <a href="#quick-setup-2-minutes"><img src="https://img.shields.io/badge/Setup-2_Minutes-F5B700?style=flat-square" alt="Quick Setup"></a>
+  <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-2EA043?style=flat-square" alt="Evolution Stages"></a>
+  <a href="#color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-00D2FF?style=flat-square" alt="Palettes"></a>
   <a href="SETUP.md"><img src="https://img.shields.io/badge/Technical_Docs-SETUP.md-8957E5?style=flat-square" alt="Technical Docs"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License"></a>
 </p>
 
 ---
 
-## 🐉 Meet Drago
+## Meet Drago
 
 **Drago is not a static badge or flat image.** 
 
 He is an animated draconic companion designed in a cel-shaded action-adventure cartoon style who lives directly on your GitHub profile:
 
-- 🫁 **Deep breathing motion** with rhythmic chest and wing flexion
-- 👁️ **Natural eye blinking** tracking visitors across your profile
-- 🐾 **Sinuous tail sway** and ground-gripping talons
-- 🔥 **Blazing energy aura** that ignites when you are on an active contribution streak
-- 🧬 **Physical anatomical evolution** growing from a gentle Magma Egg into a mythical deity as you commit code
+- **Deep breathing motion** with rhythmic chest and wing flexion
+- **Natural eye blinking** tracking visitors across your profile
+- **Sinuous tail sway** and ground-gripping talons
+- **Blazing energy aura** that ignites when you are on an active contribution streak
+- **Physical anatomical evolution** growing from a gentle Magma Egg into a mythical deity as you commit code
 
 Works out of the box on GitHub with **zero JavaScript or client dependencies**.
 
 ---
 
-## ⚡ Quick Setup (2 Minutes)
+## Quick Setup (2 Minutes)
 
 Add Drago to your GitHub Profile README in two simple steps:
 
@@ -90,7 +90,7 @@ If you prefer keeping everything in your `<username>/<username>` profile reposit
 
 ---
 
-## 🏆 Evolution Tiers
+## Evolution Tiers
 
 Drago progresses through **13 distinct evolutionary forms** based on your GitHub activity:
 
@@ -116,7 +116,7 @@ Drago progresses through **13 distinct evolutionary forms** based on your GitHub
 
 ---
 
-## 🧬 How Evolution Works
+## How Evolution Works
 
 Drago's physical traits reflect your actual development habits:
 
@@ -135,7 +135,7 @@ Drago's physical traits reflect your actual development habits:
 
 ---
 
-## 🎨 Color Palettes
+## Color Palettes
 
 Choose the skin that matches your profile's aesthetic:
 
@@ -150,14 +150,14 @@ To change your palette, set `"palette_name"` in `drago.config.json` (e.g. `"pale
 
 ---
 
-## ⚙️ Advanced Configuration & Technical Docs
+## Advanced Configuration & Technical Docs
 
 Looking for local CLI commands, custom point weights, testing suites, or architecture internals?
 
-👉 Check out the **[Technical & Developer Setup Guide (SETUP.md)](SETUP.md)**.
+Check out the **[Technical & Developer Setup Guide (SETUP.md)](SETUP.md)**.
 
 ---
 
-## 📜 License
+## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for details.

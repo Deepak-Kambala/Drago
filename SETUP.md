@@ -1,10 +1,10 @@
-# 🛠️ Drago Technical & Developer Setup Guide
+# Drago Technical & Developer Setup Guide
 
 This guide covers advanced configuration, local development workflows, CLI utilities, architecture internals, and GitHub Actions permissions for **Drago**.
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 - [1. GitHub Actions Permissions & Automation](#1-github-actions-permissions--automation)
 - [2. Local Installation & Development](#2-local-installation--development)
 - [3. CLI Tool Reference](#3-cli-tool-reference)
