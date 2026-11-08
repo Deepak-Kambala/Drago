@@ -45,17 +45,20 @@ class SpriteAnimator:
     def _detect_eye_position(self, arr: np.ndarray) -> Optional[Tuple[int, int]]:
         """Finds the amber eye coordinates on the dragon's head."""
         h, w, _ = arr.shape
+        # Precision calibration for high-res master sprites
+        if '02_hatchling' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 2:
+            return (int(w * 0.716), int(h * 0.294))  # ~ (425, 140) for 593x476
+        if '06_adult' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 6:
+            return (int(w * 0.806), int(h * 0.300))  # ~ (825, 205) for 1024x682
+
         # Head is generally in upper-right quadrant
         head_region = arr[:int(h * 0.55), int(w * 0.55):]
-        # Eye is bright amber/gold: High red (>180), high green (>120), low blue (<70)
         eye_mask = (head_region[:, :, 0] > 170) & (head_region[:, :, 1] > 110) & (head_region[:, :, 2] < 70)
         y_indices, x_indices = np.where(eye_mask)
         if len(y_indices) > 0:
-            # Average coordinate in sprite space
             ey = int(np.mean(y_indices))
             ex = int(w * 0.55) + int(np.mean(x_indices))
             return (ex, ey)
-        # Default estimation
         return (int(w * 0.82), int(h * 0.30))
 
     def warp_frame(self, t: float, action: str = "idle") -> Image.Image:
@@ -154,11 +157,11 @@ class SpriteAnimator:
             blink_amt = 1.0 - abs(math.cos(blink_rel * math.pi))
             ex, ey = self.eye_pos
             # Apply eyelid darkening to amber pixels in eye bounding zone
-            rad_x, rad_y = 3, 2
+            rad_x = max(4, int(w * 0.026))
+            rad_y = max(3, int(h * 0.022))
             for by in range(max(0, ey - rad_y), min(h, ey + rad_y + 1)):
                 for bx in range(max(0, ex - rad_x), min(w, ex + rad_x + 1)):
-                    # If pixel is amber
-                    if warped_rgb[by, bx, 0] > 150 and warped_rgb[by, bx, 1] > 90:
+                    if warped_rgb[by, bx, 0] > 140 and warped_rgb[by, bx, 1] > 90 and warped_rgb[by, bx, 2] < 90:
                         dark_eyelid = np.array([22, 23, 28], dtype=np.float32)
                         warped_rgb[by, bx] = (1.0 - blink_amt) * warped_rgb[by, bx] + blink_amt * dark_eyelid
 
