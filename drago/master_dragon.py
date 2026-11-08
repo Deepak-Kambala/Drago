@@ -186,29 +186,29 @@ class MasterDragonModel:
         return img
 
     def _render_egg(self, draw: ImageDraw.ImageDraw, p, t_rad: float):
-        """Draws the obsidian dragon egg with glowing gold veins and rocking motion."""
-        rock = math.sin(t_rad) * 0.08
-        center = p(512, 380)
-        ew, eh = (60 * self.ss), (85 * self.ss)
-
-        # Rocking transform
-        pts = []
-        for a in np.linspace(0, 2 * math.pi, 36):
-            ex = math.cos(a) * ew
-            ey = math.sin(a) * eh
-            rx = ex * math.cos(rock) - ey * math.sin(rock) + center[0]
-            ry = ex * math.sin(rock) + ey * math.cos(rock) + center[1]
-            pts.append((rx, ry))
-
-        # Shadow
-        draw.ellipse([center[0] - ew * 1.2, center[1] + eh * 0.7, center[0] + ew * 1.2, center[1] + eh * 1.0], fill=(5, 6, 8, 140))
-        # Egg shell
-        self._draw_poly(draw, pts, self.c_body_dark, self.c_ink, self.lw_heavy)
-        # Gold veins
-        pulse = 0.5 + 0.5 * math.sin(t_rad)
-        v_color = (int(252 * pulse), int(180 * pulse), int(43 * pulse))
-        v1 = [p(500, 340), p(515, 370), p(490, 400), p(520, 430)]
-        draw.line(v1, fill=v_color, width=self.lw_mid, joint="curve")
+        """Renders the authentic high-res magma dragon egg with rocking physics and heartbeat glow."""
+        import os
+        egg_path = os.path.join("assets", "sprites", "01_egg.png")
+        if os.path.exists(egg_path):
+            egg_im = Image.open(egg_path).convert("RGBA")
+            rock_deg = math.sin(t_rad) * 4.2
+            # Rotate around bottom center
+            rotated = egg_im.rotate(-rock_deg, resample=Image.Resampling.BICUBIC, center=(egg_im.width * 0.5, egg_im.height * 0.9))
+            
+            # Target display size on canvas
+            eh = int(round(320 * self.ss))
+            ew = int(round(eh * (egg_im.width / egg_im.height)))
+            scaled = rotated.resize((ew, eh), Image.Resampling.LANCZOS)
+            
+            center = p(512, 380)
+            px = int(round(center[0] - ew * 0.5))
+            py = int(round(center[1] - eh * 0.5 + 20 * self.ss))
+            
+            # Ground shadow
+            draw.ellipse([px + 10 * self.ss, py + eh - 20 * self.ss, px + ew - 10 * self.ss, py + eh + 15 * self.ss], fill=(5, 6, 8, 160))
+            # Paste egg
+            draw._image.alpha_composite(scaled, (px, py))
+            return
 
     def _draw_far_wing(self, draw: ImageDraw.ImageDraw, p, wy: float, flare: float):
         """Draws the rear (left) wing behind the neck and chest."""
