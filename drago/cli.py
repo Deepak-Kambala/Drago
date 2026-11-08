@@ -86,7 +86,8 @@ def cmd_render(args):
     out_gif = renderer.save_gif(frames, cfg.output_path, fps=cfg.fps)
     
     if cfg.show_status_card:
-        generate_status_svg(state, activity, cfg, cfg.status_card_path)
+        card_user = getattr(args, "username", None) or getattr(args, "user", None) or cfg.username
+        generate_status_svg(state, activity, cfg, cfg.status_card_path, username=card_user)
         print(f"Status card: {cfg.status_card_path}")
 
     print(f"✅ Successfully rendered animated dragon to {out_gif} ({len(frames)} frames @ {cfg.fps} FPS)\n")
@@ -203,7 +204,7 @@ def cmd_update(args):
     print(f"GIF Asset:   {out_gif}")
 
     if cfg.show_status_card:
-        card_path = generate_status_svg(state, activity, cfg, cfg.status_card_path)
+        card_path = generate_status_svg(state, activity, cfg, cfg.status_card_path, username=username)
         print(f"Status Card: {card_path}")
 
     # Output machine-readable JSON summary for GitHub Actions if requested
