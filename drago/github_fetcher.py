@@ -2,7 +2,7 @@
 GitHub activity fetcher for Drago.
 Fetches real user activity using GitHub GraphQL API (when GITHUB_TOKEN is available)
 or the GitHub Public REST API, computing rolling contributions, merged PRs, streaks,
-stars, and repositories.
+stars, and repositories with maximum precision.
 """
 
 import os
@@ -72,18 +72,19 @@ class GitHubFetcher:
 
         return self._fetch_rest(username)
 
-    def _fetch_profile_contributions(self, username: str) -> Optional[Tuple[int, int]]:
+    def _fetch_profile_contributions(self, username: str) -> Optional[Tuple[int, int, int]]:
         """
-        Scrapes the authentic profile contribution calendar total and current active streak
-        matching the exact contribution count displayed on github.com/<username>.
+        Scrapes the authentic profile contribution calendar total, current active streak,
+        and longest streak matching the exact contribution count displayed on github.com/<username>.
+        Returns: (total_contributions, current_streak, longest_streak)
         """
         url = f"https://github.com/users/{username}/contributions"
         req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; Drago/2.0)"})
         try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
+            with urllib.request.urlopen(req, timeout=12) as resp:
                 html = resp.read().decode("utf-8")
 
-            # 1. Total contributions
+            # 1. Total contributions displayed on user's GitHub profile header
             total = None
             m = re.search(r'([0-9,]+)\s+contributions\s+in\s+the\s+last\s+year', html)
             if m:
@@ -93,26 +94,66 @@ class GitHubFetcher:
                 if m2:
                     total = int(m2[0].replace(",", ""))
 
-            # 2. Current streak
+            # 2. Extract all calendar days
             items = re.findall(r'data-date="(\d{4}-\d{2}-\d{2})".*?data-level="(\d+)"', html)
-            items.sort(key=lambda x: x[0], reverse=True)
+            if not items:
+                return (total or 0, 0, 0)
+
+            # Sort descending for current streak
+            items_desc = sorted(items, key=lambda x: x[0], reverse=True)
             now_dt = datetime.now(timezone.utc).date()
             current_streak = 0
             streak_broken = False
-            for date_str, level_str in items:
+            prev_d = None
+
+            for date_str, level_str in items_desc:
                 d_date = datetime.strptime(date_str, "%Y-%m-%d").date()
                 diff = (now_dt - d_date).days
                 lvl = int(level_str)
                 if not streak_broken:
-                    if diff == 0 and lvl == 0:
-                        continue  # Today not yet active
-                    elif lvl > 0:
-                        current_streak += 1
+                    if prev_d is None:
+                        if diff <= 1:
+                            if lvl > 0:
+                                current_streak += 1
+                                prev_d = d_date
+                            elif diff == 0:
+                                continue  # Today has 0 contributions so far; keep evaluating yesterday
+                            else:
+                                streak_broken = True
+                        else:
+                            streak_broken = True
                     else:
-                        streak_broken = True
+                        if d_date == prev_d - timedelta(days=1):
+                            if lvl > 0:
+                                current_streak += 1
+                                prev_d = d_date
+                            else:
+                                streak_broken = True
+                        else:
+                            streak_broken = True
 
-            return (total or 0, current_streak)
-        except Exception as e:
+            # Sort ascending for longest streak
+            items_asc = sorted(items, key=lambda x: x[0])
+            longest_streak = 0
+            curr = 0
+            prev_asc_d = None
+            for d_str, lvl_str in items_asc:
+                d = datetime.strptime(d_str, "%Y-%m-%d").date()
+                lvl = int(lvl_str)
+                if lvl > 0:
+                    if prev_asc_d is not None and d == prev_asc_d + timedelta(days=1):
+                        curr += 1
+                    else:
+                        curr = 1
+                    prev_asc_d = d
+                    if curr > longest_streak:
+                        longest_streak = curr
+                else:
+                    curr = 0
+                    prev_asc_d = None
+
+            return (total or 0, current_streak, longest_streak)
+        except Exception:
             return None
 
     def _search_count(self, query: str, item_type: str = "commits") -> Optional[int]:
@@ -184,18 +225,18 @@ class GitHubFetcher:
             for d in w.get("contributionDays", []):
                 all_days.append(d)
 
-        # Calculate streaks and windowed activity
         now_dt = datetime.now(timezone.utc).date()
         recent_7d_commits = 0
         commits_30d = 0
         commits_90d = 0
+
+        # Current streak with strict consecutive date verification
+        all_days_desc = sorted(all_days, key=lambda x: x["date"], reverse=True)
         current_streak = 0
         streak_broken = False
+        prev_d = None
 
-        # Sort days descending
-        all_days_sorted = sorted(all_days, key=lambda x: x["date"], reverse=True)
-
-        for d in all_days_sorted:
+        for d in all_days_desc:
             d_date = datetime.strptime(d["date"], "%Y-%m-%d").date()
             diff_days = (now_dt - d_date).days
             cnt = d.get("contributionCount", 0)
@@ -208,14 +249,47 @@ class GitHubFetcher:
             if 0 <= diff_days <= 90:
                 commits_90d += cnt
 
-            # Current streak calculation
             if not streak_broken:
-                if diff_days == 0 and cnt == 0:
-                    continue  # Today not yet active
-                elif cnt > 0:
-                    current_streak += 1
+                if prev_d is None:
+                    if diff_days <= 1:
+                        if cnt > 0:
+                            current_streak += 1
+                            prev_d = d_date
+                        elif diff_days == 0:
+                            continue  # Today not yet active
+                        else:
+                            streak_broken = True
+                    else:
+                        streak_broken = True
                 else:
-                    streak_broken = True
+                    if d_date == prev_d - timedelta(days=1):
+                        if cnt > 0:
+                            current_streak += 1
+                            prev_d = d_date
+                        else:
+                            streak_broken = True
+                    else:
+                        streak_broken = True
+
+        # Longest streak across full calendar
+        all_days_asc = sorted(all_days, key=lambda x: x["date"])
+        longest_streak = 0
+        curr_run = 0
+        prev_run_d = None
+        for d in all_days_asc:
+            d_date = datetime.strptime(d["date"], "%Y-%m-%d").date()
+            cnt = d.get("contributionCount", 0)
+            if cnt > 0:
+                if prev_run_d is not None and d_date == prev_run_d + timedelta(days=1):
+                    curr_run += 1
+                else:
+                    curr_run = 1
+                prev_run_d = d_date
+                if curr_run > longest_streak:
+                    longest_streak = curr_run
+            else:
+                curr_run = 0
+                prev_run_d = None
 
         # Total contributions shown on the developer's GitHub profile
         cal_total = cal.get("totalContributions", 0)
@@ -236,7 +310,7 @@ class GitHubFetcher:
             public_repos=public_repos,
             total_stars=total_stars,
             current_streak=current_streak,
-            longest_streak=current_streak,
+            longest_streak=longest_streak or current_streak,
             raw_data={"source": "graphql", "username": username},
         )
 
@@ -260,7 +334,7 @@ class GitHubFetcher:
 
         public_repos = u_info.get("public_repos", 0)
 
-        # 2. Authentic profile contribution calendar metrics
+        # 2. Authentic profile contribution calendar metrics (total, streak, longest)
         cal_stats = self._fetch_profile_contributions(username)
         search_prs = self._search_count(f"type:pr+author:{username}", item_type="issues")
         search_merged_prs = self._search_count(f"type:pr+author:{username}+is:merged", item_type="issues")
@@ -316,10 +390,11 @@ class GitHubFetcher:
             pass
 
         if cal_stats:
-            final_commits, streak = cal_stats
+            final_commits, streak, longest_st = cal_stats
         else:
             final_commits = event_commits
             streak = len(active_days)
+            longest_st = streak
 
         final_prs = search_prs if search_prs is not None else event_prs
         final_merged_prs = search_merged_prs if search_merged_prs is not None else event_merged_prs
@@ -339,6 +414,6 @@ class GitHubFetcher:
             public_repos=public_repos,
             total_stars=total_stars,
             current_streak=streak,
-            longest_streak=streak,
+            longest_streak=longest_st or streak,
             raw_data={"source": "rest", "username": username},
         )
