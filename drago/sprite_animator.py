@@ -50,6 +50,8 @@ class SpriteAnimator:
             return (int(w * 0.716), int(h * 0.294))  # ~ (425, 140) for 593x476
         if '03_youngling' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 3:
             return (int(w * 0.825), int(h * 0.315))  # ~ (778, 252) for 944x801
+        if '04_juvenile' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 4:
+            return (int(w * 0.821), int(h * 0.295))  # ~ (765, 224) for 933x760
         if '06_adult' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 6:
             return (int(w * 0.806), int(h * 0.300))  # ~ (825, 205) for 1024x682
 
