@@ -66,6 +66,8 @@ class SpriteAnimator:
             return (int(w * 0.843), int(h * 0.394))  # ~ (828, 306) for 982x777
         if '11_dragon_lord' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 11:
             return (int(w * 0.873), int(h * 0.342))  # ~ (878, 230) for 1006x673
+        if '12_celestial_dragon' in self.sprite_path or getattr(self.state, 'stage_level', 0) == 12:
+            return (int(w * 0.731), int(h * 0.453))  # ~ (721, 286) for 986x631
 
         # Head is generally in upper-right quadrant
         head_region = arr[:int(h * 0.55), int(w * 0.55):]
