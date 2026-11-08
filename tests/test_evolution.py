@@ -10,12 +10,19 @@ class TestEvolutionEngine(unittest.TestCase):
     def setUp(self):
         self.engine = EvolutionEngine()
 
-    def test_hatchling_stage(self):
-        act = GitHubActivity(total_commits=10, total_prs=0)
+    def test_egg_stage(self):
+        act = GitHubActivity(total_commits=5, recent_commits_7d=5)
         state = self.engine.evaluate(act)
         self.assertEqual(state.stage_level, 1)
+        self.assertEqual(state.stage_name, "Egg")
+        self.assertTrue(state.is_egg)
+
+    def test_hatchling_stage(self):
+        act = GitHubActivity(total_commits=30, recent_commits_7d=30)
+        state = self.engine.evaluate(act)
+        self.assertEqual(state.stage_level, 2)
         self.assertEqual(state.stage_name, "Hatchling")
-        self.assertFalse(state.aura_intensity > 0.1)
+        self.assertFalse(state.is_egg)
 
     def test_progression_thresholds(self):
         # Test crossing into Adolescent with active recent commits

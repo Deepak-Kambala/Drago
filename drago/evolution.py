@@ -62,6 +62,10 @@ class DragonState:
     dorsal_spike_count: int
     eye_glow: float
     
+    # Sprite asset reference
+    sprite_file: str = "06_adult.png"
+    is_egg: bool = False
+    
     # Breakdown stats for display/logging
     stats_breakdown: Dict[str, Any] = field(default_factory=dict)
 
@@ -216,6 +220,8 @@ class EvolutionEngine:
             progress_to_next=round(progress, 3),
             next_stage_name=next_name,
             next_stage_score=next_score,
+            sprite_file=current_stage.get("sprite_file", "06_adult.png"),
+            is_egg=current_stage.get("is_egg", False),
             body_scale=final_body_scale,
             horn_level=horn_level,
             wing_level=wing_level,

@@ -48,15 +48,15 @@ def cmd_render(args):
     if args.stage:
         stage_idx = max(0, min(len(STAGE_DEFINITIONS) - 1, int(args.stage) - 1))
         st_def = STAGE_DEFINITIONS[stage_idx]
-        target_score = st_def["min_score"] + 10
+        target_score = st_def["min_score"] + (25 if st_def["min_score"] > 0 else 5)
         activity = GitHubActivity(
-            total_commits=int(target_score * 0.8),
-            recent_commits_7d=int(target_score * 0.2),
-            commits_30d=int(target_score * 0.5),
-            total_prs=int(target_score * 0.1),
-            merged_prs=int(target_score * 0.08),
-            public_repos=int(5 + stage_idx * 2),
-            total_stars=int(10 + stage_idx * 25),
+            total_commits=int(target_score * 1.5),
+            recent_commits_7d=int(target_score),
+            commits_30d=int(target_score),
+            total_prs=int(10 + stage_idx * 5),
+            merged_prs=int(5 + stage_idx * 4),
+            public_repos=int(4 + stage_idx * 2),
+            total_stars=int(10 + stage_idx * 30),
             current_streak=7 if st_def.get("aura_enabled", False) else 2,
         )
     else:
@@ -107,15 +107,15 @@ def cmd_preview_all(args):
     strip_images = []
     
     for i, st_def in enumerate(STAGE_DEFINITIONS):
-        target_score = st_def["min_score"] + (15 if i > 0 else 5)
+        target_score = st_def["min_score"] + (25 if st_def["min_score"] > 0 else 5)
         activity = GitHubActivity(
-            total_commits=int(target_score * 0.9),
-            recent_commits_7d=int(target_score * 0.3),
-            commits_30d=int(target_score * 0.6),
-            total_prs=int(target_score * 0.12),
-            merged_prs=int(target_score * 0.09),
+            total_commits=int(target_score * 1.5),
+            recent_commits_7d=int(target_score),
+            commits_30d=int(target_score),
+            total_prs=int(10 + i * 5),
+            merged_prs=int(5 + i * 4),
             public_repos=int(4 + i * 2),
-            total_stars=int(5 + i * 35),
+            total_stars=int(10 + i * 35),
             current_streak=10 if st_def.get("aura_enabled", False) else 2,
         )
         state = engine.evaluate(activity)
@@ -129,17 +129,24 @@ def cmd_preview_all(args):
         # Capture frame 0 for composite strip
         strip_images.append(frames[0])
 
-    # Build composite showcase image
-    strip_w = cfg.width
-    strip_h = cfg.height
-    total_w = strip_w * len(strip_images)
-    showcase = Image.new("RGBA", (total_w, strip_h), (13, 17, 23, 255))
+    # Build composite showcase image (grid of 4 columns)
+    cols = 4
+    rows = (len(strip_images) + cols - 1) // cols
+    cell_w = 325
+    cell_h = 210
+    total_w = cell_w * cols
+    total_h = cell_h * rows
+    showcase = Image.new("RGBA", (total_w, total_h), (13, 17, 23, 255))
+    
     for idx, img in enumerate(strip_images):
-        showcase.paste(img, (idx * strip_w, 0))
+        c = idx % cols
+        r = idx // cols
+        scaled_cell = img.resize((cell_w, cell_h), Image.Resampling.LANCZOS)
+        showcase.paste(scaled_cell, (c * cell_w, r * cell_h))
 
     showcase_path = "assets/evolution_showcase.png"
     showcase.save(showcase_path)
-    print(f"\n✅ All 7 stages rendered! Composite showcase: {showcase_path}\n")
+    print(f"\n✅ All {len(STAGE_DEFINITIONS)} stages rendered! Composite showcase: {showcase_path}\n")
 
 def cmd_simulate(args):
     """Simulates activity progression and decaying over time."""
@@ -227,7 +234,7 @@ def main():
     # render
     p_render = subparsers.add_parser("render", help="Render dragon animation")
     p_render.add_argument("--config", default="drago.config.json", help="Path to config file")
-    p_render.add_argument("--stage", type=int, choices=range(1, 8), help="Evolution stage (1-7)")
+    p_render.add_argument("--stage", type=int, choices=range(1, 14), help="Evolution stage (1-13)")
     p_render.add_argument("--palette", choices=list(PALETTES.keys()), help="Color palette")
     p_render.add_argument("--action", choices=["idle", "roar"], default="idle", help="Animation action")
     p_render.add_argument("--output", default="assets/dragon.gif", help="Output GIF path")

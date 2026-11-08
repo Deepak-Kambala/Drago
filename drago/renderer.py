@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 from drago.config import DragoConfig
 from drago.evolution import DragonState
 from drago.anatomy import DragonAnatomy
+from drago.sprite_animator import SpriteAnimator
 from drago.geometry import hex_to_rgb
 
 class DragonRenderer:
@@ -17,6 +18,7 @@ class DragonRenderer:
         self.config = config
         self.state = state
         self.palette = config.get_palette()
+        self.sprite_animator = SpriteAnimator(config, state)
         self.anatomy = DragonAnatomy(state, self.palette, supersample=config.supersample)
 
     def _create_background(self, w: int, h: int) -> Image.Image:
@@ -56,21 +58,17 @@ class DragonRenderer:
         action: str = "idle",
         state_override: Optional[DragonState] = None,
     ) -> Image.Image:
-        """Renders a single antialiased, downsampled frame."""
+        """Renders a single antialiased, animated dragon frame."""
+        t = frame_idx / max(1, total_frames)
         w = self.config.width
         h = self.config.height
-        ss = self.config.supersample
-        ss_w = w * ss
-        ss_h = h * ss
 
-        anatomy = self.anatomy
+        animator = self.sprite_animator
         if state_override is not None:
-            anatomy = DragonAnatomy(state_override, self.palette, supersample=ss)
+            animator = SpriteAnimator(self.config, state_override)
 
-        dragon_layer = anatomy.render_frame(w, h, frame_idx, total_frames, action=action)
-        bg_layer = self._create_background(ss_w, ss_h)
-        composite = Image.alpha_composite(bg_layer, dragon_layer)
-        return composite.resize((w, h), Image.Resampling.LANCZOS)
+        # Use authentic sprite animation
+        return animator.render_canvas_frame(t, width=w, height=h, action=action)
 
     def render_animation(
         self,

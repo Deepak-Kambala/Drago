@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="#-evolution-tiers"><img src="https://img.shields.io/badge/Evolution-7_Tiers-F5B700?style=flat-square" alt="Evolution Stages"></a>
+  <a href="#-evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-F5B700?style=flat-square" alt="Evolution Stages"></a>
   <a href="#-color-palettes"><img src="https://img.shields.io/badge/Palettes-6_Styles-00D2FF?style=flat-square" alt="Palettes"></a>
   <a href="#-github-actions-automation"><img src="https://img.shields.io/badge/GitHub_Actions-Automated_Daily-2EA043?style=flat-square" alt="Automation"></a>
   <a href="#-quick-setup-3-steps"><img src="https://img.shields.io/badge/Setup-3_Steps-8957E5?style=flat-square" alt="Setup"></a>
@@ -31,6 +31,7 @@ He is a **living character** who resides inside your GitHub profile README. Day 
 - **Wing flutter and flare** with leathery membrane flexion
 - **Occasional roaring action bursts** exposing teeth and fanning wings
 - **Radiant flame energy aura** that ignites when you are on an active contribution streak
+- **Internal life heartbeat** when in Egg form, rocking gently as you begin your coding journey
 
 No JavaScript required. No client-side interaction needed. **It works out of the box because GitHub renders animated assets natively.**
 
@@ -61,17 +62,23 @@ Drago doesn't lock you into a permanent level, nor does he suddenly shrink after
 
 ## 🏆 Evolution Tiers
 
-Drago progresses through **7 distinct evolutionary forms**, accumulating anatomical traits cumulatively:
+Drago progresses through **13 authentic evolutionary phases**, matching your GitHub progression:
 
-| Level | Form | XP Threshold | Unlocked Anatomical Features | Preview |
+| Level | Form | XP Threshold | Unlocked Anatomical Features | Continuous Animation Preview |
 |:---:|:---|:---:|:---|:---:|
-| **1** | **Hatchling** | `0 – 49` | Small compact wings, horn buds, short tail with simple fin, eager eyes | <img src="./assets/previews/stage_1_hatchling.gif" width="130"> |
-| **2** | **Young Drake** | `50 – 149` | Curved horns, lengthened tail, sharp ivory talons, dynamic racing stripes | <img src="./assets/previews/stage_2_young.gif" width="130"> |
-| **3** | **Adolescent Dragon** | `150 – 299` | Dorsal spines erupting along spine, wider wingspan, glowing markings | <img src="./assets/previews/stage_3_adolescent.gif" width="130"> |
-| **4** | **Adult Wyrm** | `300 – 599` | Sweeping recurve horns, heavy shoulder pauldron armor, broader wing struts | <img src="./assets/previews/stage_4_adult.gif" width="130"> |
-| **5** | **Mature Dreadwyrm** | `600 – 999` | Secondary brow horns, reinforced razor tail blade, chest carapace, flame embers | <img src="./assets/previews/stage_5_mature.gif" width="130"> |
-| **6** | **Ancient Leviathan** | `1000 – 1999` | Monolithic swept horns, full spine spikes, layered leg guards, radiant gaze | <img src="./assets/previews/stage_6_ancient.gif" width="130"> |
-| **7** | **Legendary Titan** | `2000+` | Enormous wings, multi-tiered crown crest, impenetrable armor, cosmic energy aura | <img src="./assets/previews/stage_7_legendary.gif" width="130"> |
+| **1** | **Egg** | `0 – 9` | Ancient obsidian shell with golden veins, gentle rocking & inner heartbeat glow | <img src="./assets/previews/stage_1_egg.gif" width="130"> |
+| **2** | **Hatchling** | `10 – 49` | Small compact wings, horn buds, short tail with simple fin, eager amber eyes | <img src="./assets/previews/stage_2_hatchling.gif" width="130"> |
+| **3** | **Youngling** | `50 – 149` | Curved horns, lengthened tail, sharp ivory talons, dynamic racing stripes | <img src="./assets/previews/stage_3_youngling.gif" width="130"> |
+| **4** | **Juvenile** | `150 – 299` | Athletic build, dorsal spines lining the spine, wider wingspan, glowing markings | <img src="./assets/previews/stage_4_juvenile.gif" width="130"> |
+| **5** | **Adolescent** | `300 – 499` | Muscular build, sweeping horns, broad limbs, ready for battle | <img src="./assets/previews/stage_5_adolescent.gif" width="130"> |
+| **6** | **Adult** | `500 – 749` | Imposing horns, heavy chest musculature, broad wings, sharp ivory talons | <img src="./assets/previews/stage_6_adult.gif" width="130"> |
+| **7** | **Mature** | `750 – 999` | Heavier scales, shoulder plates, reinforced razor tail blade, golden markings | <img src="./assets/previews/stage_7_mature.gif" width="130"> |
+| **8** | **Ancient** | `1000 – 1499` | Multi-tiered monolithic horns, double row of dorsal spikes, thick carapace | <img src="./assets/previews/stage_8_ancient.gif" width="130"> |
+| **9** | **Warlord** | `1500 – 1999` | Massive razor wings, jagged spine armor, and radiating golden power | <img src="./assets/previews/stage_9_warlord.gif" width="130"> |
+| **10** | **Elder** | `2000 – 2499` | Primordial horns, sharp dragon crests, and reinforced battle carapaces | <img src="./assets/previews/stage_10_elder.gif" width="130"> |
+| **11** | **Dragon Lord** | `2500 – 2999` | Sovereign golden wings, shoulder star emblems, ground-tremoring talons | <img src="./assets/previews/stage_11_dragon_lord.gif" width="130"> |
+| **12** | **Celestial Dragon** | `3000 – 3999` | Radiant cosmic wings, floating star crystals, and celestial energy flames | <img src="./assets/previews/stage_12_celestial_dragon.gif" width="130"> |
+| **13** | **Mythic Dragon** | `4000+` | Omnipotent form: blazing cosmic aura rings, orbiting energy crystals, divine flame | <img src="./assets/previews/stage_13_mythic_dragon.gif" width="130"> |
 
 ---
 
