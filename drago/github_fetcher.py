@@ -103,34 +103,31 @@ class GitHubFetcher:
             items_desc = sorted(items, key=lambda x: x[0], reverse=True)
             now_dt = datetime.now(timezone.utc).date()
             current_streak = 0
-            streak_broken = False
             prev_d = None
 
             for date_str, level_str in items_desc:
                 d_date = datetime.strptime(date_str, "%Y-%m-%d").date()
-                diff = (now_dt - d_date).days
+                if d_date > now_dt:
+                    continue  # Ignore future calendar days
+
                 lvl = int(level_str)
-                if not streak_broken:
-                    if prev_d is None:
-                        if diff <= 1:
-                            if lvl > 0:
-                                current_streak += 1
-                                prev_d = d_date
-                            elif diff == 0:
-                                continue  # Today has 0 contributions so far; keep evaluating yesterday
-                            else:
-                                streak_broken = True
-                        else:
-                            streak_broken = True
+                if prev_d is None:
+                    if d_date == now_dt and lvl == 0:
+                        continue  # Today not yet committed; check yesterday
+                    if lvl > 0:
+                        current_streak += 1
+                        prev_d = d_date
                     else:
-                        if d_date == prev_d - timedelta(days=1):
-                            if lvl > 0:
-                                current_streak += 1
-                                prev_d = d_date
-                            else:
-                                streak_broken = True
+                        break  # Streak is 0
+                else:
+                    if d_date == prev_d - timedelta(days=1):
+                        if lvl > 0:
+                            current_streak += 1
+                            prev_d = d_date
                         else:
-                            streak_broken = True
+                            break
+                    else:
+                        break
 
             # Sort ascending for longest streak
             items_asc = sorted(items, key=lambda x: x[0])
@@ -249,27 +246,26 @@ class GitHubFetcher:
             if 0 <= diff_days <= 90:
                 commits_90d += cnt
 
-            if not streak_broken:
-                if prev_d is None:
-                    if diff_days <= 1:
-                        if cnt > 0:
-                            current_streak += 1
-                            prev_d = d_date
-                        elif diff_days == 0:
-                            continue  # Today not yet active
-                        else:
-                            streak_broken = True
-                    else:
-                        streak_broken = True
+            if d_date > now_dt:
+                continue  # Ignore future calendar days in current week
+
+            if prev_d is None:
+                if d_date == now_dt and cnt == 0:
+                    continue  # Today not yet active, check yesterday
+                if cnt > 0:
+                    current_streak += 1
+                    prev_d = d_date
                 else:
-                    if d_date == prev_d - timedelta(days=1):
-                        if cnt > 0:
-                            current_streak += 1
-                            prev_d = d_date
-                        else:
-                            streak_broken = True
+                    break  # Streak is 0
+            else:
+                if d_date == prev_d - timedelta(days=1):
+                    if cnt > 0:
+                        current_streak += 1
+                        prev_d = d_date
                     else:
-                        streak_broken = True
+                        break
+                else:
+                    break
 
         # Longest streak across full calendar
         all_days_asc = sorted(all_days, key=lambda x: x["date"])

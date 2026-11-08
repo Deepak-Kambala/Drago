@@ -82,18 +82,24 @@ class EvolutionEngine:
         # User's primary progression score is 1:1 with authentic contributions
         base_score = float(activity.total_commits) * self.weights.get("commit", 1.0)
         
+        # Pull request score: automatically rewarded for collaborative development
+        pr_weight = self.weights.get("pull_request", 2.0)
+        merged_pr_weight = self.weights.get("merged_pr", 1.0)
+        pr_score = round(float(activity.total_prs) * pr_weight + float(activity.merged_prs) * merged_pr_weight, 1)
+
         # Subtle streak bonus that rewards continuous coding without jumping levels prematurely
         streak_bonus = round(min(activity.current_streak * 0.1, 5.0), 1) if activity.current_streak > 0 else 0.0
         
-        raw_score = round(base_score + streak_bonus, 1)
+        raw_score = round(base_score + pr_score + streak_bonus, 1)
         decayed_score = raw_score
 
         categories = {
             "commits": base_score,
-            "pull_requests": float(activity.total_prs),
+            "pull_requests": pr_score,
             "issues": float(activity.issues_opened),
             "repos": float(activity.public_repos),
             "stars": float(activity.total_stars),
+            "streak_bonus": streak_bonus,
             "streak_days": float(activity.current_streak),
         }
 

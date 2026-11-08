@@ -135,13 +135,15 @@ def generate_status_svg(
           font-size="9.5"
           font-weight="700"
           letter-spacing="0.8">STREAK</text>
-    <!-- Faceted 3D Gold Star Icon -->
-    <g transform="translate(24, 86) scale(0.85)">
-      <polygon points="9,1 11.5,6.5 17.5,7.3 13,11.5 14.2,17.4 9,14.5" fill="#FFC83B" />
-      <polygon points="9,1 6.5,6.5 0.5,7.3 5,11.5 3.8,17.4 9,14.5" fill="#D48800" />
-      <polygon points="9,1 11.5,6.5 9,14.5" fill="#FFEAA7" opacity="0.65" />
+    <!-- Dynamic 3D Action Star Icon -->
+    <g transform="translate(24, 85)">
+      <polygon points="8,0 10.5,6 16,8 10.5,10 8,16 5.5,10 0,8 5.5,6" fill="#F5B700" />
+      <polygon points="8,0 10.5,6 16,8 8,8" fill="#FFDF43" />
+      <polygon points="8,8 10.5,10 8,16" fill="#D99B00" />
+      <polygon points="8,8 5.5,10 0,8" fill="#A67300" />
+      <polygon points="0,8 5.5,6 8,0 8,8" fill="#FFEBA3" opacity="0.85" />
     </g>
-    <text x="44" y="100"
+    <text x="46" y="100"
           fill="#FFFFFF"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
