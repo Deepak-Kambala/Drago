@@ -60,7 +60,7 @@
           font-weight="900"
           font-style="italic"
           text-anchor="middle"
-          letter-spacing="0.5">LVL 4</text>
+          letter-spacing="0.5">LVL 5</text>
 
     <!-- Bold Italic Stage Name -->
     <text x="96" y="32.5"
@@ -69,14 +69,14 @@
           font-size="16"
           font-weight="900"
           font-style="italic"
-          letter-spacing="1">JUVENILE</text>
+          letter-spacing="1">ADOLESCENT</text>
 
     <!-- Dynamic XP & Percentage -->
     <text x="628" y="32"
           text-anchor="end"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif">
-      <tspan fill="#F5B700" font-size="14" font-weight="900" font-style="italic">178.7 XP</tspan>
-      <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (19%)</tspan>
+      <tspan fill="#F5B700" font-size="14" font-weight="900" font-style="italic">306.4 XP</tspan>
+      <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (3%)</tspan>
     </text>
   </g>
 
@@ -85,11 +85,11 @@
     <!-- Recessed Dark Track -->
     <rect x="20" y="46" width="608" height="8" rx="2" fill="#12161F" stroke="#222834" stroke-width="1" />
     <!-- Angled Leading-Edge Progress Fill -->
-    <polygon points="20,46 136,46 131,54 20,54"
+    <polygon points="20,46 39,46 34,54 20,54"
              fill="url(#barGrad)"
              filter="url(#softGlow)" />
     <!-- Subtle Specular Top Highlight Line -->
-    <line x1="20" y1="47" x2="136" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
+    <line x1="20" y1="47" x2="39" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
   </g>
 
   <!-- BOTTOM STATS: 4 Separated Columns -->
@@ -137,7 +137,7 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">178.7</text>
+          font-style="italic">306.4</text>
   </g>
 
   <!-- Column 3: COMMITS -->
@@ -160,7 +160,7 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">109</text>
+          font-style="italic">122</text>
   </g>
 
   <!-- Column 4: PULL REQUESTS -->
