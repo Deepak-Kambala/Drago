@@ -13,7 +13,7 @@ body:
     attributes:
       label: GitHub Username
       description: The exact GitHub username to evaluate.
-      placeholder: e.g. AnuragTummapudi
+      placeholder: e.g. octocat
     validations:
       required: true
   - type: dropdown
