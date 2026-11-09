@@ -2,8 +2,8 @@ name: Drago Evolution Update
 
 on:
   schedule:
-    # Runs daily at midnight UTC to recalculate rolling decay, streaks, and evolution
-    - cron: "0 0 * * *"
+    # Runs every 15 minutes to evaluate latest contributions, streaks, and evolution
+    - cron: "*/15 * * * *"
   push:
     branches:
       - main
@@ -17,9 +17,11 @@ on:
         required: false
         default: ""
       force_stage:
-        description: "Force specific evolution stage (1-7, leave blank for auto)"
+        description: "Force specific evolution stage (1-13, leave blank for auto)"
         required: false
         default: ""
+  repository_dispatch:
+    types: [drago-update]
 
 permissions:
   contents: write
@@ -72,6 +74,7 @@ jobs:
             
             git add assets/
             git commit -m "Drago: Evolve dragon to $STAGE_NAME [skip ci]"
+            git pull --rebase origin HEAD:${{ github.ref_name }} || true
             git push origin HEAD:${{ github.ref_name }}
             echo "Successfully committed and pushed evolved dragon assets!"
           else

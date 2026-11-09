@@ -41,7 +41,7 @@ For GitHub Actions to push updated dragon assets back to your repository:
 6. Click **Save**.
 
 ### Manual Trigger
-You can test the workflow at any time without waiting for midnight:
+You can test the workflow at any time without waiting for the scheduled 15-minute run:
 1. Go to the **Actions** tab in your repository.
 2. Select **Drago Evolution Update** in the left sidebar.
 3. Click **Run workflow**, optionally specifying:
