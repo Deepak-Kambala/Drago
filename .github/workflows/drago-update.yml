@@ -50,12 +50,20 @@ jobs:
       - name: Update Dragon Evolution & Assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          TARGET_USER="${{ github.event.inputs.username || github.repository_owner }}"
+          TARGET_USER="${{ github.event.inputs.username }}"
+          if [ -z "$TARGET_USER" ]; then
+            TARGET_USER="${{ github.repository_owner }}"
+          fi
+          if [ -z "$TARGET_USER" ]; then
+            TARGET_USER="$(echo "${{ github.repository }}" | cut -d'/' -f1)"
+          fi
           echo "Evaluating GitHub activity for: $TARGET_USER"
           
           if [ -n "${{ github.event.inputs.force_stage }}" ]; then
-            python -m drago.cli render --stage "${{ github.event.inputs.force_stage }}" --output assets/dragon.gif
+            python -m drago.cli render --stage "${{ github.event.inputs.force_stage }}" --username "$TARGET_USER" --output assets/dragon.gif
           else
             python -m drago.cli update --username "$TARGET_USER" --token "$GITHUB_TOKEN"
           fi

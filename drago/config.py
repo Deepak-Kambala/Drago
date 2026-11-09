@@ -413,7 +413,7 @@ DECAY_WEIGHTS = {
 
 @dataclass
 class DragoConfig:
-    username: str = "octocat"
+    username: str = ""
     palette_name: str = "obsidian-gold"
     custom_palette: Dict[str, str] = field(default_factory=dict)
     species: str = "action-dragon"

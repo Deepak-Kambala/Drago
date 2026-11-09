@@ -149,7 +149,7 @@ Customize Drago's behavior by editing `drago.config.json`:
 
 ```json
 {
-  "username": "Deepak-Kambala",
+  "username": "",
   "palette_name": "obsidian-gold",
   "species": "action-dragon",
   "fps": 12,
@@ -234,6 +234,12 @@ Tests validate:
 ---
 
 ## 7. Troubleshooting & FAQs
+
+### Why does my forked Drago show the original repository stats/dragon initially?
+When you fork Drago, your fork inherits the initial committed assets until your GitHub Actions workflow runs for the first time. GitHub disables Actions on forks by default:
+1. Go to your fork's **Actions** tab and click **I understand my workflows, go ahead and enable them**.
+2. Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and run it once.
+3. This immediately evaluates your real GitHub activity and commits your personalized dragon and status card to your fork.
 
 ### Why is my dragon not updating on my profile?
 GitHub aggressively caches image assets via its `camo.githubusercontent.com` proxy.

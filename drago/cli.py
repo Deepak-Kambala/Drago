@@ -6,9 +6,11 @@ and palette management.
 
 import os
 import sys
+import re
 import json
 import argparse
-from typing import Optional
+import subprocess
+from typing import Optional, Tuple
 from PIL import Image
 
 from drago.config import DragoConfig, PALETTES, STAGE_DEFINITIONS
@@ -17,6 +19,54 @@ from drago.animator import DragonAnimator
 from drago.renderer import DragonRenderer
 from drago.status_card import generate_status_svg
 from drago.github_fetcher import GitHubFetcher
+
+def resolve_username(args_username: Optional[str] = None, config_username: Optional[str] = None) -> Tuple[Optional[str], str]:
+    """
+    Dynamically and robustly resolves the GitHub username to evaluate.
+    Returns: (username, source_description)
+
+    Priority order:
+    1. Explicit CLI argument (--username <user>)
+    2. Environment variable: TARGET_USER
+    3. Environment variable: GITHUB_REPOSITORY_OWNER (set automatically by GitHub Actions)
+    4. GITHUB_REPOSITORY environment variable (extracting owner from "owner/repo")
+    5. Config file username (if set, non-empty, and not a placeholder like 'octocat')
+    6. Git remote origin URL parsing (e.g. from git@github.com:owner/repo or https://github.com/owner/repo)
+    """
+    if args_username and args_username.strip():
+        return args_username.strip(), "CLI argument (--username)"
+
+    env_target = os.environ.get("TARGET_USER")
+    if env_target and env_target.strip():
+        return env_target.strip(), "TARGET_USER environment variable"
+
+    gh_owner = os.environ.get("GITHUB_REPOSITORY_OWNER")
+    if gh_owner and gh_owner.strip():
+        return gh_owner.strip(), "GITHUB_REPOSITORY_OWNER environment variable"
+
+    gh_repo = os.environ.get("GITHUB_REPOSITORY")
+    if gh_repo and "/" in gh_repo:
+        parts = gh_repo.split("/")
+        if parts[0].strip():
+            return parts[0].strip(), "GITHUB_REPOSITORY environment variable"
+
+    if config_username and config_username.strip():
+        cleaned = config_username.strip()
+        if cleaned.lower() not in ("octocat", "your_username", "placeholder"):
+            return cleaned, "drago.config.json"
+
+    try:
+        origin = subprocess.check_output(
+            ["git", "config", "--get", "remote.origin.url"],
+            text=True, stderr=subprocess.DEVNULL
+        ).strip()
+        m = re.search(r"github\.com[:/]([^/]+)/", origin)
+        if m and m.group(1).strip():
+            return m.group(1).strip(), "git remote origin URL"
+    except Exception:
+        pass
+
+    return None, "none"
 
 def load_config(config_path: str = "drago.config.json") -> DragoConfig:
     cfg = DragoConfig()
@@ -86,8 +136,11 @@ def cmd_render(args):
     out_gif = renderer.save_gif(frames, cfg.output_path, fps=cfg.fps)
     
     if cfg.show_status_card:
-        card_user = getattr(args, "username", None) or getattr(args, "user", None) or cfg.username
-        generate_status_svg(state, activity, cfg, cfg.status_card_path, username=card_user)
+        card_user, _ = resolve_username(
+            getattr(args, "username", None) or getattr(args, "user", None),
+            cfg.username
+        )
+        generate_status_svg(state, activity, cfg, cfg.status_card_path, username=card_user or "Developer")
         print(f"Status card: {cfg.status_card_path}")
 
     print(f"✅ Successfully rendered animated dragon to {out_gif} ({len(frames)} frames @ {cfg.fps} FPS)\n")
@@ -173,14 +226,15 @@ def cmd_simulate(args):
 def cmd_update(args):
     """Production GitHub Actions runner command."""
     cfg = load_config(args.config)
-    username = args.username or cfg.username
+    username, source = resolve_username(args.username, cfg.username)
     if not username:
-        print("[Drago] Error: GitHub username not specified. Set in drago.config.json or pass --username.")
+        print("[Drago] Error: GitHub username not detected.")
+        print("[Drago] Please pass --username <user>, set TARGET_USER or GITHUB_REPOSITORY_OWNER env, or set 'username' in drago.config.json.")
         sys.exit(1)
 
     print(f"\n🐉 DRAGO GITHUB UPDATE WORKFLOW")
     print(f"==========================================")
-    print(f"User:        {username}")
+    print(f"User:        {username} (resolved via {source})")
 
     fetcher = GitHubFetcher(token=args.token)
     try:
@@ -237,6 +291,7 @@ def main():
     p_render.add_argument("--config", default="drago.config.json", help="Path to config file")
     p_render.add_argument("--stage", type=int, choices=range(1, 14), help="Evolution stage (1-13)")
     p_render.add_argument("--palette", choices=list(PALETTES.keys()), help="Color palette")
+    p_render.add_argument("--username", help="GitHub username for status card")
     p_render.add_argument("--action", choices=["idle", "roar"], default="idle", help="Animation action")
     p_render.add_argument("--output", default="assets/dragon.gif", help="Output GIF path")
     p_render.add_argument("--fps", type=int, help="Frames per second")
