@@ -39,9 +39,9 @@ No need to fork or configure GitHub Actions. We generate and host your evolving 
 
 ```markdown
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/users/YOUR_USERNAME/dragon.gif" width="650" alt="My Evolving Dragon">
+  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/gh-pages/users/YOUR_USERNAME/dragon.gif" width="650" alt="My Evolving Dragon">
   <br>
-  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/users/YOUR_USERNAME/dragon-status.svg" width="650" alt="Drago Status Card">
+  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/gh-pages/users/YOUR_USERNAME/dragon-status.svg" width="650" alt="Drago Status Card">
 </p>
 ```
 

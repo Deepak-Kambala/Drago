@@ -63,19 +63,10 @@ jobs:
             python -m drago.cli update-all --token "$GITHUB_TOKEN"
           fi
 
-      - name: Commit and Push Evolution Updates
+      - name: Deploy Assets to Orphan gh-pages Branch (0 MB History Bloat)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          # Check if any assets were updated
-          if [ -n "$(git status --porcelain assets/)" ]; then
-            git add assets/
-            git commit -m "Drago: Auto-update registered dragon evolutions [skip ci]" || echo "No changes to commit"
-            git pull --rebase origin HEAD:${{ github.ref_name }} || true
-            git push origin HEAD:${{ github.ref_name }}
-            echo "Successfully committed and pushed evolved dragon assets!"
-          else
-            echo "No evolution changes detected in this cycle."
-          fi
+          python scripts/deploy_assets.py
 
