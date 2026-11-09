@@ -163,6 +163,58 @@ Drago features **6 cel-shaded color palettes**. Both your animated dragon compan
 | **Toxic Emerald** | `"toxic-emerald"` | Bio-forest body `#141D17` with radioactive green `#2BEE6C` | <img src="./assets/palettes/toxic-emerald.png" width="170" alt="Toxic Emerald"> | <img src="./assets/palettes/status-toxic-emerald.svg" width="220" alt="Toxic Emerald Card"> |
 | **Solar Flare** | `"solar-flare"` | Ember ash body `#241812` with blazing solar orange flame `#FF7700` | <img src="./assets/palettes/solar-flare.png" width="170" alt="Solar Flare"> | <img src="./assets/palettes/status-solar-flare.svg" width="220" alt="Solar Flare Card"> |
 
+### 13-Phase Evolution Showcases by Palette
+
+Every evolutionary form physically transforms and radiates in your selected palette:
+
+<details open>
+<summary><strong>Obsidian Gold (Default) - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_obsidian-gold.png" width="700" alt="Obsidian Gold 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
+<details>
+<summary><strong>Crimson Fury - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_crimson-fury.png" width="700" alt="Crimson Fury 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
+<details>
+<summary><strong>Arctic Frost - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_arctic-frost.png" width="700" alt="Arctic Frost 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
+<details>
+<summary><strong>Cyberpunk Neon - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_cyberpunk-neon.png" width="700" alt="Cyberpunk Neon 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
+<details>
+<summary><strong>Toxic Emerald - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_toxic-emerald.png" width="700" alt="Toxic Emerald 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
+<details>
+<summary><strong>Solar Flare - 13 Evolution Phases</strong></summary>
+<br>
+<p align="center">
+  <img src="./assets/evolution_showcase_solar-flare.png" width="700" alt="Solar Flare 13-Phase Evolution Showcase Grid">
+</p>
+</details>
+
 ### How to Switch Your Palette
 To change your dragon's skin, set `"palette_name"` in your `drago.config.json`:
 
