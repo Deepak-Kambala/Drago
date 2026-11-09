@@ -1,0 +1,109 @@
+name: Register User Dragon
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  register:
+    runs-on: ubuntu-latest
+    if: |
+      (github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'dragon-registration')) ||
+      (github.event_name == 'issues' && startsWith(github.event.issue.title, 'Register:')) ||
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '/register'))
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow numpy
+
+      - name: Extract Registration Information
+        id: parse
+        run: |
+          TARGET_USER="${{ github.event.issue.user.login }}"
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            TARGET_USER="${{ github.event.comment.user.login }}"
+          fi
+
+          TITLE="${{ github.event.issue.title }}"
+          if [[ "$TITLE" =~ ^Register:[[:space:]]*([a-zA-Z0-9_-]+) ]]; then
+            TARGET_USER="${BASH_REMATCH[1]}"
+          fi
+
+          PALETTE="obsidian-gold"
+          BODY="${{ github.event.issue.body || github.event.comment.body }}"
+          for p in crimson-fury arctic-frost cyberpunk-neon toxic-emerald solar-flare obsidian-gold; do
+            if echo "$BODY" | grep -iq "$p"; then
+              PALETTE="$p"
+              break
+            fi
+          done
+
+          echo "user=$TARGET_USER" >> $GITHUB_OUTPUT
+          echo "palette=$PALETTE" >> $GITHUB_OUTPUT
+          echo "Parsed User: $TARGET_USER with Palette: $PALETTE"
+
+      - name: Register and Render Dragon
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python -m drago.cli register --username "${{ steps.parse.outputs.user }}" --palette "${{ steps.parse.outputs.palette }}" --token "$GITHUB_TOKEN"
+
+      - name: Commit and Push Registration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add registered_users.json assets/users/
+          git commit -m "Drago: Register ${{ steps.parse.outputs.user }} (${{ steps.parse.outputs.palette }}) [skip ci]" || echo "No changes to commit"
+          git pull --rebase origin main || true
+          git push origin main
+
+      - name: Comment and Close Issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const user = "${{ steps.parse.outputs.user }}";
+            const palette = "${{ steps.parse.outputs.palette }}";
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+
+            const body = `### Welcome to Drago, @${user}!\n\nYour personal evolving dragon has been forged in the **${palette}** palette!\n\n#### Add to your Profile README\nPaste this snippet into your profile \`README.md\` (\`${user}/${user}\`):\n\n\`\`\`markdown\n<p align="center">\n  <img src="https://raw.githubusercontent.com/${owner}/${repo}/main/assets/users/${user}/dragon.gif" width="650" alt="My Evolving Dragon">\n  <br>\n  <img src="https://raw.githubusercontent.com/${owner}/${repo}/main/assets/users/${user}/dragon-status.svg" width="650" alt="Drago Status Card">\n</p>\n\`\`\`\n\nYour dragon will automatically evolve as you push commits, merge PRs, and build your streaks. Enjoy!`;
+
+            if (context.eventName === 'issues') {
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+              await github.rest.issues.update({
+                owner: owner,
+                repo: repo,
+                issue_number: context.issue.number,
+                state: 'closed'
+              });
+            } else if (context.eventName === 'issue_comment') {
+              await github.rest.issues.createComment({
+                owner: owner,
+                repo: repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

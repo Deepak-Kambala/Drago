@@ -223,8 +223,76 @@ def cmd_simulate(args):
         print(f"  Anatomy:     Scale: {state.body_scale:.2f}x | Horns: Tier {state.horn_level} | Wings: Tier {state.wing_level} | Spikes: {state.dorsal_spike_count} | Armor: Tier {state.armor_level}")
         print(f"  Streak Aura: {state.aura_intensity * 100:.0f}%")
 
+def render_user_dragon(
+    username: str,
+    palette_name: Optional[str] = None,
+    cfg: Optional[DragoConfig] = None,
+    token: Optional[str] = None,
+    output_dir: str = "assets",
+    is_primary: bool = False,
+):
+    """Renders all dragon assets (GIF, SVG status card, JSON state) for a specific user."""
+    if cfg is None:
+        cfg = load_config()
+
+    if palette_name and palette_name in PALETTES:
+        cfg.palette_name = palette_name
+
+    os.makedirs(output_dir, exist_ok=True)
+    out_gif = os.path.join(output_dir, "dragon.gif")
+    out_svg = os.path.join(output_dir, "dragon-status.svg")
+    out_state = os.path.join(output_dir, "drago-state.json")
+
+    print(f"\n🐉 RENDERING DRAGON FOR: {username} (Palette: {cfg.palette_name})")
+    print(f"==========================================")
+
+    fetcher = GitHubFetcher(token=token)
+    try:
+        activity = fetcher.fetch_activity(username)
+    except Exception as e:
+        print(f"[Drago] Error fetching GitHub activity for {username}: {e}")
+        print(f"[Drago] Using base starter activity...")
+        activity = GitHubActivity(total_commits=10, public_repos=1, total_stars=0, current_streak=1)
+
+    engine = EvolutionEngine()
+    state = engine.evaluate(activity)
+
+    print(f"Stage:       Level {state.stage_level} - {state.stage_name} ({state.stage_title})")
+    print(f"Score:       {state.score} (Raw: {state.raw_score})")
+    print(f"Activity:    Commits: {activity.total_commits}, PRs: {activity.total_prs} (Merged: {activity.merged_prs}), Repos: {activity.public_repos}, Stars: {activity.total_stars}, Streak: {activity.current_streak}d")
+
+    renderer = DragonRenderer(cfg, state)
+    frames = renderer.render_animation(action="idle")
+    renderer.save_gif(frames, out_gif, fps=cfg.fps)
+    print(f"GIF Asset:   {out_gif}")
+
+    if cfg.show_status_card:
+        generate_status_svg(state, activity, cfg, out_svg, username=username)
+        print(f"Status Card: {out_svg}")
+
+    summary = {
+        "username": username,
+        "palette": cfg.palette_name,
+        "stage_level": state.stage_level,
+        "stage_name": state.stage_name,
+        "score": state.score,
+        "progress": state.progress_to_next,
+        "asset_path": out_gif,
+    }
+    with open(out_state, "w", encoding="utf-8") as f:
+        json.dump(summary, f, indent=2)
+
+    if is_primary and output_dir != "assets":
+        import shutil
+        os.makedirs("assets", exist_ok=True)
+        shutil.copyfile(out_gif, "assets/dragon.gif")
+        shutil.copyfile(out_svg, "assets/dragon-status.svg")
+        shutil.copyfile(out_state, "assets/drago-state.json")
+
+    return state, activity
+
 def cmd_update(args):
-    """Production GitHub Actions runner command."""
+    """Production GitHub Actions runner command for a single user."""
     cfg = load_config(args.config)
     username, source = resolve_username(args.username, cfg.username)
     if not username:
@@ -232,48 +300,110 @@ def cmd_update(args):
         print("[Drago] Please pass --username <user>, set TARGET_USER or GITHUB_REPOSITORY_OWNER env, or set 'username' in drago.config.json.")
         sys.exit(1)
 
-    print(f"\n🐉 DRAGO GITHUB UPDATE WORKFLOW")
-    print(f"==========================================")
-    print(f"User:        {username} (resolved via {source})")
+    print(f"Target User: {username} (resolved via {source})")
+    render_user_dragon(
+        username=username,
+        cfg=cfg,
+        token=args.token,
+        output_dir="assets",
+        is_primary=True,
+    )
+    print(f"✅ Drago updated successfully for {username}!\n")
 
-    fetcher = GitHubFetcher(token=args.token)
-    try:
-        activity = fetcher.fetch_activity(username)
-    except Exception as e:
-        print(f"[Drago] Error fetching GitHub activity: {e}")
-        print("[Drago] Using fallback base activity...")
-        activity = GitHubActivity(total_commits=100, public_repos=5, total_stars=10, current_streak=3)
+def cmd_register(args):
+    """Registers a new user in the Central Hub and renders their initial dragon."""
+    username = (args.username or "").strip()
+    if not username:
+        print("[Drago] Error: Username required for registration. Pass --username <user>.")
+        sys.exit(1)
 
-    engine = EvolutionEngine()
-    state = engine.evaluate(activity)
+    palette = args.palette or "obsidian-gold"
+    registry_file = getattr(args, "registry", "registered_users.json")
 
-    print(f"Stage:       Level {state.stage_level} - {state.stage_name} ({state.stage_title})")
-    print(f"Score:       {state.score} (Raw: {state.raw_score})")
-    print(f"Traits:      Horns T{state.horn_level}, Wings T{state.wing_level}, Spikes {state.dorsal_spike_count}, Armor T{state.armor_level}")
-    print(f"Activity:    Commits: {activity.total_commits}, PRs: {activity.total_prs} (Merged: {activity.merged_prs}), Repos: {activity.public_repos}, Stars: {activity.total_stars}, Streak: {activity.current_streak}d")
+    users = []
+    if os.path.exists(registry_file):
+        try:
+            with open(registry_file, "r", encoding="utf-8") as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    for item in data:
+                        if isinstance(item, str):
+                            users.append({"username": item, "palette": "obsidian-gold"})
+                        elif isinstance(item, dict) and "username" in item:
+                            users.append(item)
+        except Exception as e:
+            print(f"[Drago] Warning: failed to parse {registry_file}: {e}")
 
-    renderer = DragonRenderer(cfg, state)
-    frames = renderer.render_animation(action="idle")
-    out_gif = renderer.save_gif(frames, cfg.output_path, fps=cfg.fps)
-    print(f"GIF Asset:   {out_gif}")
+    # Check if already registered
+    found = False
+    for u in users:
+        if u["username"].lower() == username.lower():
+            u["palette"] = palette
+            found = True
+            break
 
-    if cfg.show_status_card:
-        card_path = generate_status_svg(state, activity, cfg, cfg.status_card_path, username=username)
-        print(f"Status Card: {card_path}")
+    if not found:
+        users.append({"username": username, "palette": palette})
 
-    # Output machine-readable JSON summary for GitHub Actions if requested
-    summary = {
-        "username": username,
-        "stage_level": state.stage_level,
-        "stage_name": state.stage_name,
-        "score": state.score,
-        "progress": state.progress_to_next,
-        "asset_path": out_gif,
-    }
-    with open("assets/drago-state.json", "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=2)
+    with open(registry_file, "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=2)
+    print(f"✅ Registered '{username}' in {registry_file} (Palette: {palette})")
 
-    print(f"✅ Drago updated successfully!\n")
+    repo_owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "Deepak-Kambala")
+    is_owner = (username.lower() == repo_owner.lower())
+
+    user_dir = f"assets/users/{username}"
+    render_user_dragon(
+        username=username,
+        palette_name=palette,
+        token=args.token,
+        output_dir=user_dir,
+        is_primary=is_owner,
+    )
+    print(f"\n🎉 Successfully created dragon for {username}!")
+    print(f"Embed in profile README:")
+    print(f'<img src="https://raw.githubusercontent.com/{repo_owner}/Drago/main/{user_dir}/dragon.gif" width="650">')
+    print(f'<img src="https://raw.githubusercontent.com/{repo_owner}/Drago/main/{user_dir}/dragon-status.svg" width="650">\n')
+
+def cmd_update_all(args):
+    """Central Hub runner: updates all registered users in registered_users.json."""
+    registry_file = getattr(args, "registry", "registered_users.json")
+    if not os.path.exists(registry_file):
+        print(f"[Drago] Registry file {registry_file} not found. Nothing to update.")
+        return
+
+    with open(registry_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    users = []
+    if isinstance(data, list):
+        for item in data:
+            if isinstance(item, str):
+                users.append({"username": item, "palette": "obsidian-gold"})
+            elif isinstance(item, dict) and "username" in item:
+                users.append(item)
+
+    repo_owner = os.environ.get("GITHUB_REPOSITORY_OWNER", "Deepak-Kambala")
+    print(f"\n🐉 DRAGO CENTRAL HUB: UPDATING ALL {len(users)} REGISTERED USERS")
+    print(f"============================================================")
+
+    for idx, user_info in enumerate(users):
+        uname = user_info["username"]
+        pal = user_info.get("palette", "obsidian-gold")
+        print(f"\n[{idx+1}/{len(users)}] Updating {uname} ({pal})...")
+        is_owner = (uname.lower() == repo_owner.lower())
+        try:
+            render_user_dragon(
+                username=uname,
+                palette_name=pal,
+                token=args.token,
+                output_dir=f"assets/users/{uname}",
+                is_primary=is_owner,
+            )
+        except Exception as e:
+            print(f"[Drago] Error updating {uname}: {e}. Skipping to next user...")
+
+    print(f"\n✅ All {len(users)} registered users updated successfully!\n")
 
 def cmd_palettes(args):
     print("\n🎨 AVAILABLE COLOR PALETTES:")
@@ -318,6 +448,19 @@ def main():
     # simulate
     subparsers.add_parser("simulate", help="Run evolution engine simulations")
 
+    # register (Central Hub)
+    p_reg = subparsers.add_parser("register", help="Register user and render their dragon in Central Hub")
+    p_reg.add_argument("--username", required=True, help="GitHub username to register")
+    p_reg.add_argument("--palette", choices=list(PALETTES.keys()), default="obsidian-gold", help="Dragon color palette")
+    p_reg.add_argument("--registry", default="registered_users.json", help="Path to registry JSON file")
+    p_reg.add_argument("--token", help="GitHub API Token (or GITHUB_TOKEN env)")
+
+    # update-all (Central Hub)
+    p_upall = subparsers.add_parser("update-all", help="Update all registered user dragons in Central Hub")
+    p_upall.add_argument("--registry", default="registered_users.json", help="Path to registry JSON file")
+    p_upall.add_argument("--token", help="GitHub API Token (or GITHUB_TOKEN env)")
+    p_upall.add_argument("--config", default="drago.config.json", help="Path to config file")
+
     # palettes
     subparsers.add_parser("palettes", help="List available color palettes")
 
@@ -326,6 +469,10 @@ def main():
         cmd_render(args)
     elif args.command == "update":
         cmd_update(args)
+    elif args.command == "register":
+        cmd_register(args)
+    elif args.command == "update-all":
+        cmd_update_all(args)
     elif args.command == "preview-all":
         cmd_preview_all(args)
     elif args.command == "simulate":

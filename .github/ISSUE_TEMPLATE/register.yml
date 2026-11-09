@@ -1,0 +1,32 @@
+name: Register My Dragon
+description: Register your GitHub username to get your personal evolving dragon without forking!
+title: "Register: [Your GitHub Username]"
+labels: ["dragon-registration"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ### Welcome to Drago Central Hub!
+        Submit this form to automatically register your GitHub profile. Our automated bot will generate your evolving dragon within ~30 seconds and reply with your ready-to-use README snippet!
+  - type: input
+    id: username
+    attributes:
+      label: GitHub Username
+      description: The exact GitHub username to evaluate.
+      placeholder: e.g. AnuragTummapudi
+    validations:
+      required: true
+  - type: dropdown
+    id: palette
+    attributes:
+      label: Color Palette
+      description: Choose your dragon's visual color style.
+      options:
+        - obsidian-gold
+        - crimson-fury
+        - arctic-frost
+        - cyberpunk-neon
+        - toxic-emerald
+        - solar-flare
+    validations:
+      required: true

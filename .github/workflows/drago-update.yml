@@ -53,19 +53,14 @@ jobs:
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          TARGET_USER="${{ github.event.inputs.username }}"
-          if [ -z "$TARGET_USER" ]; then
-            TARGET_USER="${{ github.repository_owner }}"
-          fi
-          if [ -z "$TARGET_USER" ]; then
-            TARGET_USER="$(echo "${{ github.repository }}" | cut -d'/' -f1)"
-          fi
-          echo "Evaluating GitHub activity for: $TARGET_USER"
-          
           if [ -n "${{ github.event.inputs.force_stage }}" ]; then
+            TARGET_USER="${{ github.event.inputs.username || github.repository_owner }}"
             python -m drago.cli render --stage "${{ github.event.inputs.force_stage }}" --username "$TARGET_USER" --output assets/dragon.gif
+          elif [ -n "${{ github.event.inputs.username }}" ]; then
+            python -m drago.cli update --username "${{ github.event.inputs.username }}" --token "$GITHUB_TOKEN"
           else
-            python -m drago.cli update --username "$TARGET_USER" --token "$GITHUB_TOKEN"
+            # Central Hub mode: update all registered users automatically
+            python -m drago.cli update-all --token "$GITHUB_TOKEN"
           fi
 
       - name: Commit and Push Evolution Updates
@@ -73,15 +68,10 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           
-          # Check if assets were updated
+          # Check if any assets were updated
           if [ -n "$(git status --porcelain assets/)" ]; then
-            STAGE_NAME="Evolved Dragon"
-            if [ -f "assets/drago-state.json" ]; then
-              STAGE_NAME=$(python -c "import json; d=json.load(open('assets/drago-state.json')); print(f'Level {d[\"stage_level\"]}: {d[\"stage_name\"]}')" 2>/dev/null || echo "Evolved Dragon")
-            fi
-            
             git add assets/
-            git commit -m "Drago: Evolve dragon to $STAGE_NAME [skip ci]"
+            git commit -m "Drago: Auto-update registered dragon evolutions [skip ci]" || echo "No changes to commit"
             git pull --rebase origin HEAD:${{ github.ref_name }} || true
             git push origin HEAD:${{ github.ref_name }}
             echo "Successfully committed and pushed evolved dragon assets!"

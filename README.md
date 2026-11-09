@@ -22,11 +22,37 @@
 
 ---
 
-## Quick Setup (60 Seconds)
+## Quick Setup (30 Seconds)
 
-Add your evolving dragon to your GitHub Profile README in four quick steps:
+Add your evolving dragon to your GitHub Profile README:
 
-### Option A: The Easy Fork Way (Recommended)
+### Option A: Central Hub (Recommended - No Forking Required)
+
+No need to fork or configure GitHub Actions. We generate and host your evolving dragon automatically:
+
+1. **Register your Profile**:
+   Open a 1-click issue using the **[Register My Dragon](https://github.com/Deepak-Kambala/Drago/issues/new?template=register.yml)** form, select your palette, and hit submit.
+2. **Instant Generation**:
+   Within 30 seconds, Drago's automated bot evaluates your GitHub contributions, generates your personal dragon, comments with your embed link, and closes the issue.
+3. **Embed in your Profile README** (`<username>/<username>`):
+   Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username):
+
+```markdown
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/users/YOUR_USERNAME/dragon.gif" width="650" alt="My Evolving Dragon">
+  <br>
+  <img src="https://raw.githubusercontent.com/Deepak-Kambala/Drago/main/assets/users/YOUR_USERNAME/dragon-status.svg" width="650" alt="Drago Status Card">
+</p>
+```
+
+> [!TIP]
+> Your dragon automatically updates every 15 minutes as you push commits, merge pull requests, and maintain coding streaks. Zero maintenance required.
+
+---
+
+### Option B: The Independent Fork Way
+
+If you prefer hosting and running the GitHub Action inside your own forked repository:
 
 1. **Fork this repository** to your GitHub account (keep the default name `drago`).
 2. **Enable Workflow Write Permissions**:
@@ -35,7 +61,7 @@ Add your evolving dragon to your GitHub Profile README in four quick steps:
 3. **Enable and Run GitHub Actions**:
    - Go to the **Actions** tab in your repository.
    - Click the green button: **I understand my workflows, go ahead and enable them**.
-   - Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and click the green **Run workflow** button. This immediately evaluates your real GitHub contributions and commits your personal dragon and status card into your repository.
+   - Click **Drago Evolution Update** in the left sidebar, click **Run workflow**, and click the green **Run workflow** button.
 4. **Embed in your Profile README** (`<username>/<username>`):
    Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username):
 
@@ -47,16 +73,12 @@ Add your evolving dragon to your GitHub Profile README in four quick steps:
 </p>
 ```
 
-> [!TIP]
-> Newly forked repositories inherit template assets until GitHub Actions runs for the first time. Clicking **Run workflow** once immediately generates your custom dragon matching your authentic commits, PRs, and streak!
-
 > [!IMPORTANT]
 > **Do not open a Pull Request back to this repository.** Your forked repository is completely independent. Once Actions runs in your fork, your assets are already live in your repository and ready to display.
 
-
 ---
 
-### Option B: Directly Inside Your Profile Repository
+### Option C: Directly Inside Your Profile Repository
 
 If you prefer keeping everything consolidated inside your existing `<username>/<username>` profile repository:
 
