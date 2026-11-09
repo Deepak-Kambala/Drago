@@ -287,10 +287,13 @@ class GitHubFetcher:
                 curr_run = 0
                 prev_run_d = None
 
-        # Total contributions shown on the developer's GitHub profile
+        # Total lifetime contributions & commits
+        # Evaluates both author commit search (lifetime) and contribution calendar
+        search_commits = self._search_count(f"author:{username}", item_type="commits")
         cal_total = cal.get("totalContributions", 0)
         commit_contribs = contribs.get("totalCommitContributions", 0) + contribs.get("restrictedContributionsCount", 0)
-        total_commits = cal_total if cal_total > 0 else (commit_contribs if commit_contribs > 0 else 0)
+        commit_candidates = [c for c in [search_commits, cal_total, commit_contribs] if c is not None]
+        total_commits = max(commit_candidates) if commit_candidates else 0
 
         return GitHubActivity(
             total_commits=total_commits,
@@ -335,6 +338,7 @@ class GitHubFetcher:
         search_prs = self._search_count(f"type:pr+author:{username}", item_type="issues")
         search_merged_prs = self._search_count(f"type:pr+author:{username}+is:merged", item_type="issues")
         search_issues = self._search_count(f"type:issue+author:{username}", item_type="issues")
+        search_commits = self._search_count(f"author:{username}", item_type="commits")
 
         # 3. Public events for recent activity recency
         url_events = f"https://api.github.com/users/{username}/events?per_page=100"
@@ -386,11 +390,14 @@ class GitHubFetcher:
             pass
 
         if cal_stats:
-            final_commits, streak, longest_st = cal_stats
+            cal_commits, streak, longest_st = cal_stats
         else:
-            final_commits = event_commits
+            cal_commits = event_commits
             streak = len(active_days)
             longest_st = streak
+
+        commit_candidates = [c for c in [search_commits, cal_commits, event_commits] if c is not None]
+        final_commits = max(commit_candidates) if commit_candidates else 0
 
         final_prs = search_prs if search_prs is not None else event_prs
         final_merged_prs = search_merged_prs if search_merged_prs is not None else event_merged_prs

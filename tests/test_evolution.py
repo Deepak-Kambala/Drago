@@ -84,5 +84,12 @@ class TestEvolutionEngine(unittest.TestCase):
         self.assertGreater(s2.score, s1.score)
         self.assertGreater(s2.aura_intensity, s1.aura_intensity)
 
+    def test_high_commit_ancient_progression(self):
+        # Users with 900+ commits should evolve to high tiers (Ancient Dragon)
+        act = GitHubActivity(total_commits=934, total_prs=51, merged_prs=28, current_streak=4)
+        state = self.engine.evaluate(act)
+        self.assertGreaterEqual(state.stage_level, 7)
+        self.assertGreaterEqual(state.score, 1000)
+
 if __name__ == "__main__":
     unittest.main()
