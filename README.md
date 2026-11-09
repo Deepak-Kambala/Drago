@@ -148,16 +148,31 @@ Drago's physical traits reflect your actual development habits:
 
 ## Color Palettes
 
-Choose the skin that matches your profile aesthetic:
+Drago features **6 cel-shaded color palettes**. Both your animated dragon companion and the cyberpunk HUD status card automatically adapt to your chosen aesthetic:
 
-- **Obsidian Gold** *(Default)*: Charcoal obsidian body `#1E1F24` with racing gold accents `#F5B700` and amber eyes.
-- **Crimson Fury**: Deep scarlet charcoal `#2D0F14` with blazing crimson accents `#FF2A4D`.
-- **Arctic Frost**: Glacial silver `#E2E9F2` with electric cyan energy `#00D2FF`.
-- **Cyberpunk Neon**: Midnight synth `#14141E` with hyper turquoise `#00F5D4` and magenta spikes.
-- **Toxic Emerald**: Bio-forest `#141D17` with radioactive green `#2BEE6C`.
-- **Solar Flare**: Ember ash `#241812` with blazing solar orange flame `#FF7700`.
+<p align="center">
+  <img src="./assets/palettes_showcase.png" width="700" alt="Drago 6 Cel-Shaded Color Palettes Showcase">
+</p>
 
-To change your palette, set `"palette_name"` in `drago.config.json` (e.g. `"palette_name": "crimson-fury"`).
+| Palette | Config Key | Theme & Accents | Dragon Preview | Matching Status Card |
+| :--- | :--- | :--- | :---: | :---: |
+| **Obsidian Gold** *(Default)* | `"obsidian-gold"` | Charcoal obsidian body `#1E1F24` with gold accents `#F5B700` | <img src="./assets/palettes/obsidian-gold.png" width="170" alt="Obsidian Gold"> | <img src="./assets/palettes/status-obsidian-gold.svg" width="220" alt="Obsidian Gold Card"> |
+| **Crimson Fury** | `"crimson-fury"` | Deep scarlet body `#2D0F14` with radiant crimson accents `#FF2A4D` | <img src="./assets/palettes/crimson-fury.png" width="170" alt="Crimson Fury"> | <img src="./assets/palettes/status-crimson-fury.svg" width="220" alt="Crimson Fury Card"> |
+| **Arctic Frost** | `"arctic-frost"` | Glacial silver body `#E2E9F2` with electric cyan accents `#00D2FF` | <img src="./assets/palettes/arctic-frost.png" width="170" alt="Arctic Frost"> | <img src="./assets/palettes/status-arctic-frost.svg" width="220" alt="Arctic Frost Card"> |
+| **Cyberpunk Neon** | `"cyberpunk-neon"` | Midnight synth body `#14141E` with hyper turquoise `#00F5D4` | <img src="./assets/palettes/cyberpunk-neon.png" width="170" alt="Cyberpunk Neon"> | <img src="./assets/palettes/status-cyberpunk-neon.svg" width="220" alt="Cyberpunk Neon Card"> |
+| **Toxic Emerald** | `"toxic-emerald"` | Bio-forest body `#141D17` with radioactive green `#2BEE6C` | <img src="./assets/palettes/toxic-emerald.png" width="170" alt="Toxic Emerald"> | <img src="./assets/palettes/status-toxic-emerald.svg" width="220" alt="Toxic Emerald Card"> |
+| **Solar Flare** | `"solar-flare"` | Ember ash body `#241812` with blazing solar orange flame `#FF7700` | <img src="./assets/palettes/solar-flare.png" width="170" alt="Solar Flare"> | <img src="./assets/palettes/status-solar-flare.svg" width="220" alt="Solar Flare Card"> |
+
+### How to Switch Your Palette
+To change your dragon's skin, set `"palette_name"` in your `drago.config.json`:
+
+```json
+{
+  "palette_name": "crimson-fury"
+}
+```
+
+The next time GitHub Actions executes (or when triggered manually), your dragon GIF and status card will automatically update to your selected palette.
 
 ---
 

@@ -43,9 +43,61 @@ class SpriteAnimator:
             self.sprite_arr = raw_arr
             self.alpha_arr = np.clip((max_c - 2.0) / 10.0, 0.0, 1.0) * 255.0
 
+        # Apply dynamic palette recoloring across all 6 cel-shaded themes
+        self.sprite_arr = self._recolor_to_palette(self.sprite_arr, self.alpha_arr)
+
         # Detect eye location for blinking
         self.eye_pos = self._detect_eye_position(self.sprite_arr)
         self.is_egg = getattr(state, "is_egg", False)
+
+    def _recolor_to_palette(self, rgb_arr: np.ndarray, alpha_arr: np.ndarray) -> np.ndarray:
+        """
+        Dynamically recolors dragon sprites to match any of the 6 authentic themes
+        (Obsidian Gold, Crimson Fury, Arctic Frost, Cyberpunk Neon, Toxic Emerald, Solar Flare)
+        or custom user-defined palettes while preserving cel-shading and alpha anti-aliasing.
+        """
+        palette_name = getattr(self.config, "palette_name", "obsidian-gold")
+        if palette_name == "obsidian-gold" and not getattr(self.config, "custom_palette", None):
+            return rgb_arr.copy()
+
+        from drago.geometry import hex_to_rgb
+        palette = self.config.get_palette()
+        out_rgb = rgb_arr.copy()
+        r = out_rgb[:, :, 0]
+        g = out_rgb[:, :, 1]
+        b = out_rgb[:, :, 2]
+
+        target_accent = np.array(hex_to_rgb(palette.get("accent", "#F5B700")), dtype=np.float32)
+        target_glow = np.array(hex_to_rgb(palette.get("accent_glow", palette.get("accent", "#FFD13B"))), dtype=np.float32)
+        target_dark = np.array(hex_to_rgb(palette.get("accent_dark", palette.get("accent", "#B88200"))), dtype=np.float32)
+        body_tint = np.array(hex_to_rgb(palette.get("body_primary", "#1E1F24")), dtype=np.float32)
+
+        # Detect glowing gold / warm accent markings (high R, high G, lower B)
+        warmth = np.maximum(0.0, np.minimum(r, g * 1.15) - b * 1.35)
+        accent_weight = np.clip((warmth - 25.0) / 90.0, 0.0, 1.0)
+
+        # Luminance determines shading (dark shade -> primary accent -> specular glow)
+        lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255.0
+
+        low_mask = lum < 0.60
+        f_low = np.clip(lum / 0.60, 0.0, 1.0)[:, :, None]
+        t_low = target_dark * (1.0 - f_low) + target_accent * f_low
+
+        f_high = np.clip((lum - 0.60) / 0.40, 0.0, 1.0)[:, :, None]
+        t_high = target_accent * (1.0 - f_high) + target_glow * f_high
+
+        t_color = np.where(low_mask[:, :, None], t_low, t_high)
+
+        # Blend accents smoothly
+        w = accent_weight[:, :, None]
+        out_rgb = out_rgb * (1.0 - w) + t_color * w
+
+        # Subtle body tinting (adapts dark charcoal body to match theme tone)
+        body_mask = (1.0 - accent_weight) * (alpha_arr / 255.0) * (1.0 - np.clip((r + g + b) / 280.0, 0.0, 1.0))
+        b_w = (body_mask * 0.22)[:, :, None]
+        out_rgb = out_rgb * (1.0 - b_w) + body_tint * b_w
+
+        return np.clip(out_rgb, 0.0, 255.0)
 
     def _detect_eye_position(self, arr: np.ndarray) -> Optional[Tuple[int, int]]:
         """Finds the amber eye coordinates on the dragon's head."""
@@ -211,6 +263,8 @@ class SpriteAnimator:
 
         palette = self.config.get_palette()
         accent = palette.get("accent", "#FCB42B")
+        from drago.geometry import hex_to_rgb
+        accent_rgb = hex_to_rgb(accent)
 
         cx, cy = width * 0.48, height * 0.54
         r_mult = 1.0 + (self.state.stage_level / 13.0) * 0.35
@@ -220,7 +274,7 @@ class SpriteAnimator:
             rx = (width * 0.34 * r_mult) * (r_step / 6.0)
             ry = (height * 0.28 * r_mult) * (r_step / 6.0)
             step_alpha = int(glow_alpha * (1.0 - (r_step / 6.0) * 0.75))
-            glow_draw.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(252, 180, 43, step_alpha))
+            glow_draw.ellipse([cx - rx, cy - ry, cx + rx, cy + ry], fill=(accent_rgb[0], accent_rgb[1], accent_rgb[2], step_alpha))
 
         # 2. Contact Shadow under feet
         glow_draw.ellipse([80, int(height * 0.88 - 14), width - 80, int(height * 0.88 + 14)], fill=(5, 6, 8, 170))
