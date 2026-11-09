@@ -42,14 +42,29 @@ jobs:
             TARGET_USER="${{ github.event.comment.user.login }}"
           fi
 
+          PALETTES_LIST="crimson-fury arctic-frost cyberpunk-neon toxic-emerald solar-flare obsidian-gold"
+          PALETTE="obsidian-gold"
+
+          BODY="${{ github.event.issue.body || github.event.comment.body }}"
           TITLE="${{ github.event.issue.title }}"
+
+          # Check title format: Register: <username>
           if [[ "$TITLE" =~ ^Register:[[:space:]]*([a-zA-Z0-9_-]+) ]]; then
             TARGET_USER="${BASH_REMATCH[1]}"
           fi
 
-          PALETTE="obsidian-gold"
-          BODY="${{ github.event.issue.body || github.event.comment.body }}"
-          for p in crimson-fury arctic-frost cyberpunk-neon toxic-emerald solar-flare obsidian-gold; do
+          # Check comment format: /register <arg>
+          if [[ "$BODY" =~ /register[[:space:]]+([a-zA-Z0-9_-]+) ]]; then
+            ARG1="${BASH_REMATCH[1]}"
+            if echo "$PALETTES_LIST" | grep -qw "$ARG1"; then
+              PALETTE="$ARG1"
+            else
+              TARGET_USER="$ARG1"
+            fi
+          fi
+
+          # Search for palette in body
+          for p in $PALETTES_LIST; do
             if echo "$BODY" | grep -iq "$p"; then
               PALETTE="$p"
               break
@@ -107,3 +122,4 @@ jobs:
                 body: body
               });
             }
+
