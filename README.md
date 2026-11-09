@@ -31,7 +31,7 @@ Add your evolving dragon to your GitHub Profile README:
 No need to fork or configure GitHub Actions. We generate and host your evolving dragon automatically:
 
 1. **Register your Profile (Zero Code)**:
-   Comment `/register` on the **[Pinned Registration Issue (#2)](https://github.com/Deepak-Kambala/Drago/issues/2)** (or submit a 1-click issue via **[Register My Dragon](https://github.com/Deepak-Kambala/Drago/issues/new?template=register.yml)**).
+   Comment `/register` on the **[Pinned Registration Issue (#2)](#)**: [Direct Link to Comment Box](https://github.com/Deepak-Kambala/Drago/issues/2#issue-comment-box) (or submit a 1-click issue via **[Register My Dragon Form](https://github.com/Deepak-Kambala/Drago/issues/new?template=register.yml)**).
 2. **Instant Generation**:
    Within 30 seconds, Drago's automated bot evaluates your GitHub contributions, generates your personal dragon, comments with your embed link, and closes the issue.
 3. **Embed in your Profile README** (`<username>/<username>`):
