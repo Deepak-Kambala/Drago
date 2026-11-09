@@ -36,44 +36,15 @@ jobs:
 
       - name: Extract Registration Information
         id: parse
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          ISSUE_USER: ${{ github.event.issue.user.login }}
+          COMMENT_USER: ${{ github.event.comment.user.login }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          COMMENT_BODY: ${{ github.event.comment.body }}
         run: |
-          TARGET_USER="${{ github.event.issue.user.login }}"
-          if [ "${{ github.event_name }}" = "issue_comment" ]; then
-            TARGET_USER="${{ github.event.comment.user.login }}"
-          fi
-
-          PALETTES_LIST="crimson-fury arctic-frost cyberpunk-neon toxic-emerald solar-flare obsidian-gold"
-          PALETTE="obsidian-gold"
-
-          BODY="${{ github.event.issue.body || github.event.comment.body }}"
-          TITLE="${{ github.event.issue.title }}"
-
-          # Check title format: Register: <username>
-          if [[ "$TITLE" =~ ^Register:[[:space:]]*([a-zA-Z0-9_-]+) ]]; then
-            TARGET_USER="${BASH_REMATCH[1]}"
-          fi
-
-          # Check comment format: /register <arg>
-          if [[ "$BODY" =~ /register[[:space:]]+([a-zA-Z0-9_-]+) ]]; then
-            ARG1="${BASH_REMATCH[1]}"
-            if echo "$PALETTES_LIST" | grep -qw "$ARG1"; then
-              PALETTE="$ARG1"
-            else
-              TARGET_USER="$ARG1"
-            fi
-          fi
-
-          # Search for palette in body
-          for p in $PALETTES_LIST; do
-            if echo "$BODY" | grep -iq "$p"; then
-              PALETTE="$p"
-              break
-            fi
-          done
-
-          echo "user=$TARGET_USER" >> $GITHUB_OUTPUT
-          echo "palette=$PALETTE" >> $GITHUB_OUTPUT
-          echo "Parsed User: $TARGET_USER with Palette: $PALETTE"
+          python scripts/parse_registration.py
 
       - name: Register and Render Dragon
         env:
@@ -85,9 +56,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main || true
           git add registered_users.json assets/users/
           git commit -m "Drago: Register ${{ steps.parse.outputs.user }} (${{ steps.parse.outputs.palette }}) [skip ci]" || echo "No changes to commit"
-          git pull --rebase origin main || true
           git push origin main
 
       - name: Comment and Close Issue
