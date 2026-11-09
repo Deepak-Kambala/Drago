@@ -75,7 +75,7 @@
     <text x="628" y="32"
           text-anchor="end"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif">
-      <tspan fill="#F5B700" font-size="14" font-weight="900" font-style="italic">1,051.4 XP</tspan>
+      <tspan fill="#F5B700" font-size="14" font-weight="900" font-style="italic">1,050.4 XP</tspan>
       <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (63%)</tspan>
     </text>
   </g>
@@ -85,11 +85,11 @@
     <!-- Recessed Dark Track -->
     <rect x="20" y="46" width="608" height="8" rx="2" fill="#12161F" stroke="#222834" stroke-width="1" />
     <!-- Angled Leading-Edge Progress Fill -->
-    <polygon points="20,46 402,46 397,54 20,54"
+    <polygon points="20,46 401,46 396,54 20,54"
              fill="url(#barGrad)"
              filter="url(#softGlow)" />
     <!-- Subtle Specular Top Highlight Line -->
-    <line x1="20" y1="47" x2="402" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
+    <line x1="20" y1="47" x2="401" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
   </g>
 
   <!-- BOTTOM STATS: 4 Separated Columns -->
@@ -139,7 +139,7 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">1,051.4</text>
+          font-style="italic">1,050.4</text>
   </g>
 
   <!-- Column 3: COMMITS -->
@@ -162,7 +162,7 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">709</text>
+          font-style="italic">708</text>
   </g>
 
   <!-- Column 4: PULL REQUESTS -->
