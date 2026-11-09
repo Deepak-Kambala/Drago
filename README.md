@@ -140,8 +140,9 @@ Drago's physical traits reflect your actual development habits:
 
 ### XP & Level Progression
 - **1:1 Contribution Mapping**: Each contribution on your GitHub calendar grants 1.0 XP.
+- **Pull Request Rewards**: Each pull request awards 4.0 XP, with accepted/merged pull requests granting an additional 6.0 XP.
 - **Streak Bonus**: Each consecutive day in your active streak grants an additional 0.1 XP (up to 5.0 XP bonus).
-- **Smooth Progress Bar**: The golden progress bar on your status card fills proportionally between your current level and the next tier, advancing with every commit and contribution.
+- **Smooth Progress Bar**: The golden progress bar on your status card fills proportionally between your current level and the next tier, advancing with every commit, contribution, and pull request.
 
 ---
 

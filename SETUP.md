@@ -28,7 +28,7 @@ This guide covers:
 
 ## 1. GitHub Actions Permissions & Automation
 
-Drago runs a daily automated GitHub Action (`.github/workflows/drago-update.yml`) that queries GitHub's API for the user's latest contributions, evaluates the evolution score, re-renders the assets, and commits them.
+Drago runs an automated GitHub Action (`.github/workflows/drago-update.yml`) every 15 minutes that queries GitHub's API for the user's latest contributions, evaluates the evolution score, re-renders the assets, and commits them.
 
 ### Workflow Permissions Setup
 For GitHub Actions to push updated dragon assets back to your repository:
@@ -47,6 +47,23 @@ You can test the workflow at any time without waiting for the scheduled 15-minut
 3. Click **Run workflow**, optionally specifying:
    - `username`: Target GitHub username (defaults to repository owner).
    - `force_stage`: Specific stage (1–13) to test rendering.
+
+### Optional: Exact On-Time Scheduling via External Cron (e.g. cron-job.org)
+GitHub Actions schedule crons can experience queuing delays during peak GitHub hours. If you want updates to execute at the exact second, you can trigger the workflow from an external service such as [cron-job.org](https://cron-job.org):
+
+1. Generate a GitHub Personal Access Token (classic) with `repo` scope (**Settings** $\rightarrow$ **Developer Settings** $\rightarrow$ **Personal access tokens**).
+2. In cron-job.org, click **Create cronjob** $\rightarrow$ **Import from cURL**, and paste:
+
+```bash
+curl -X POST "https://api.github.com/repos/YOUR_USERNAME/drago/dispatches" \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer YOUR_GITHUB_TOKEN" \
+  -H "User-Agent: Drago-Cron-Job" \
+  -H "Content-Type: application/json" \
+  -d '{"event_type":"drago-update"}'
+```
+
+3. Set the schedule to **Every 15 minutes** and save.
 
 ---
 
