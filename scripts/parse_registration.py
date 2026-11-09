@@ -38,8 +38,8 @@ def parse_registration():
         if pal_cand in palettes:
             palette = pal_cand
 
-    # 1. Check title format: Register: <username>
-    m_title = re.search(r"Register:\s*([a-zA-Z0-9_-]+)", title, re.IGNORECASE)
+    # 1. Check title format: Register <username> or Register: <username>
+    m_title = re.search(r"Register(?::|\s)\s*([a-zA-Z0-9_-]+)", title, re.IGNORECASE)
     if m_title and event_name != "issue_comment" and not m_form_user:
         cand = m_title.group(1).strip()
         if cand.lower() not in palettes and cand.lower() not in ("[your", "username]"):
