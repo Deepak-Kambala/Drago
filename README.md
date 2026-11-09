@@ -85,14 +85,14 @@ Drago progresses through **13 distinct evolutionary forms** based on your GitHub
 | **3** | **Youngling** | `50 – 149` | Curved horns, lengthened tail, sharp ivory talons | <img src="./assets/previews/stage_3_youngling.gif" width="130" alt="Youngling"> |
 | **4** | **Juvenile** | `150 – 299` | Athletic build, dorsal spines, wider wingspan, glowing markings | <img src="./assets/previews/stage_4_juvenile.gif" width="130" alt="Juvenile"> |
 | **5** | **Adolescent** | `300 – 499` | Muscular limbs, sweeping battle horns, battle stance | <img src="./assets/previews/stage_5_adolescent.gif" width="130" alt="Adolescent"> |
-| **6** | **Adult** | `500 – 749` | Broad wingspan, heavy chest musculature, imposing silhouette | <img src="./assets/previews/stage_6_adult.gif" width="130" alt="Adult"> |
-| **7** | **Mature** | `750 – 999` | Shoulder carapaces, reinforced tail blade, golden flank markings | <img src="./assets/previews/stage_7_mature.gif" width="130" alt="Mature"> |
-| **8** | **Ancient** | `1000 – 1499` | Multi-tiered monolithic horns, double dorsal spikes, dense armor | <img src="./assets/previews/stage_8_ancient.gif" width="130" alt="Ancient"> |
-| **9** | **Warlord** | `1500 – 1999` | Massive razor wings, jagged spine armor, and radiating golden power | <img src="./assets/previews/stage_9_warlord.gif" width="130" alt="Warlord"> |
-| **10** | **Elder** | `2000 – 2499` | Primordial horns, sharp dragon crests, and reinforced battle carapaces | <img src="./assets/previews/stage_10_elder.gif" width="130" alt="Elder"> |
-| **11** | **Dragon Lord** | `2500 – 2999` | Sovereign golden wings, shoulder star emblems, ground-tremoring talons | <img src="./assets/previews/stage_11_dragon_lord.gif" width="130" alt="Dragon Lord"> |
-| **12** | **Celestial Dragon** | `3000 – 3999` | Radiant cosmic wings, floating star crystals, and celestial energy flames | <img src="./assets/previews/stage_12_celestial_dragon.gif" width="130" alt="Celestial Dragon"> |
-| **13** | **Mythic Dragon** | `4000+` | Omnipotent form: blazing cosmic aura rings, orbiting energy crystals, divine flame | <img src="./assets/previews/stage_13_mythic_dragon.gif" width="130" alt="Mythic Dragon"> |
+| **6** | **Adult** | `500 – 799` | Broad wingspan, heavy chest musculature, imposing silhouette | <img src="./assets/previews/stage_6_adult.gif" width="130" alt="Adult"> |
+| **7** | **Mature** | `800 – 1199` | Shoulder carapaces, reinforced tail blade, golden flank markings | <img src="./assets/previews/stage_7_mature.gif" width="130" alt="Mature"> |
+| **8** | **Ancient** | `1200 – 1799` | Multi-tiered monolithic horns, double dorsal spikes, dense armor | <img src="./assets/previews/stage_8_ancient.gif" width="130" alt="Ancient"> |
+| **9** | **Warlord** | `1800 – 2699` | Massive razor wings, jagged spine armor, and radiating golden power | <img src="./assets/previews/stage_9_warlord.gif" width="130" alt="Warlord"> |
+| **10** | **Elder** | `2700 – 3999` | Primordial horns, sharp dragon crests, and reinforced battle carapaces | <img src="./assets/previews/stage_10_elder.gif" width="130" alt="Elder"> |
+| **11** | **Dragon Lord** | `4000 – 5999` | Sovereign golden wings, shoulder star emblems, ground-tremoring talons | <img src="./assets/previews/stage_11_dragon_lord.gif" width="130" alt="Dragon Lord"> |
+| **12** | **Celestial Dragon** | `6000 – 8999` | Radiant cosmic wings, floating star crystals, and celestial energy flames | <img src="./assets/previews/stage_12_celestial_dragon.gif" width="130" alt="Celestial Dragon"> |
+| **13** | **Mythic Dragon** | `9000+` | Omnipotent form: blazing cosmic aura rings, orbiting energy crystals, divine flame | <img src="./assets/previews/stage_13_mythic_dragon.gif" width="130" alt="Mythic Dragon"> |
 
 <p align="center">
   <img src="./assets/evolution_showcase.png" width="700" alt="Drago 13-Phase Evolution Showcase Grid">
