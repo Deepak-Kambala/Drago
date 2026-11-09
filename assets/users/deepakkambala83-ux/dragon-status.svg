@@ -3,7 +3,7 @@
     <!-- Metallic Gold Outer Border Gradient -->
     <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFDF43" />
-      <stop offset="35%" stop-color="#2BEE6C" />
+      <stop offset="35%" stop-color="#FF2A4D" />
       <stop offset="75%" stop-color="#D99B00" />
       <stop offset="100%" stop-color="#A67300" />
     </linearGradient>
@@ -17,14 +17,14 @@
     <!-- Dynamic Progress Bar Gradient -->
     <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#D98A00" />
-      <stop offset="60%" stop-color="#2BEE6C" />
-      <stop offset="100%" stop-color="#7DFFAB" />
+      <stop offset="60%" stop-color="#FF2A4D" />
+      <stop offset="100%" stop-color="#FF6B85" />
     </linearGradient>
 
     <!-- Lightning Bolt Gradient -->
     <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFF085" />
-      <stop offset="100%" stop-color="#2BEE6C" />
+      <stop offset="100%" stop-color="#FF2A4D" />
     </linearGradient>
 
     <!-- Subtle Tech Glow Filter -->
@@ -51,10 +51,10 @@
     <!-- Chamfered Level Badge -->
     <polygon points="24,18 76,18 83,28 76,38 24,38 17,28"
              fill="#0B0E14"
-             stroke="#2BEE6C"
+             stroke="#FF2A4D"
              stroke-width="1.5" />
     <text x="50" y="32"
-          fill="#2BEE6C"
+          fill="#FF2A4D"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif"
           font-size="11"
           font-weight="900"
@@ -75,7 +75,7 @@
     <text x="628" y="32"
           text-anchor="end"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif">
-      <tspan fill="#2BEE6C" font-size="14" font-weight="900" font-style="italic">3.1 XP</tspan>
+      <tspan fill="#FF2A4D" font-size="14" font-weight="900" font-style="italic">3.1 XP</tspan>
       <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (31%)</tspan>
     </text>
   </g>
@@ -135,7 +135,7 @@
       <polygon points="9,1 2,10 7.5,10 5,18 14,8 8.5,8" fill="url(#boltGrad)" />
     </g>
     <text x="202" y="100"
-          fill="#2BEE6C"
+          fill="#FF2A4D"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
