@@ -1,6 +1,6 @@
 name: Register My Dragon
 description: Register your GitHub username to get your personal evolving dragon without forking!
-title: "Register: [Your GitHub Username]"
+title: "Register: "
 labels: ["dragon-registration"]
 body:
   - type: markdown
