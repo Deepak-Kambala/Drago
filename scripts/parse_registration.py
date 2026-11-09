@@ -27,11 +27,22 @@ def parse_registration():
     ]
     palette = "obsidian-gold"
 
+    # 0. Check GitHub Issue Form fields: ### GitHub Username \n <username>
+    m_form_user = re.search(r"###\s*GitHub Username\s*\n+([a-zA-Z0-9_-]+)", relevant_text, re.IGNORECASE)
+    if m_form_user:
+        target_user = m_form_user.group(1).strip()
+
+    m_form_pal = re.search(r"###\s*Color Palette\s*\n+([a-zA-Z0-9_-]+)", relevant_text, re.IGNORECASE)
+    if m_form_pal:
+        pal_cand = m_form_pal.group(1).strip().lower()
+        if pal_cand in palettes:
+            palette = pal_cand
+
     # 1. Check title format: Register: <username>
     m_title = re.search(r"Register:\s*([a-zA-Z0-9_-]+)", title, re.IGNORECASE)
-    if m_title and event_name != "issue_comment":
+    if m_title and event_name != "issue_comment" and not m_form_user:
         cand = m_title.group(1).strip()
-        if cand.lower() not in palettes:
+        if cand.lower() not in palettes and cand.lower() not in ("[your", "username]"):
             target_user = cand
 
     # 2. Check /register command format: /register [arg1] [arg2]

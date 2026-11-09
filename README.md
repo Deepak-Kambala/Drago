@@ -11,7 +11,7 @@
 </p>
 
 <p align="center">
-  <a href="#quick-setup-60-seconds"><img src="https://img.shields.io/badge/Setup-60_Seconds-2EA043?style=flat-square" alt="Quick Setup"></a>
+  <a href="#quick-setup-30-seconds"><img src="https://img.shields.io/badge/Setup-30_Seconds-2EA043?style=flat-square" alt="Quick Setup"></a>
   <a href="#evolution-tiers"><img src="https://img.shields.io/badge/Evolution-13_Tiers-00D2FF?style=flat-square" alt="Evolution Stages"></a>
   <a href="#about"><img src="https://img.shields.io/badge/About-Drago-F5B700?style=flat-square" alt="About Drago"></a>
   <a href="#how-it-works"><img src="https://img.shields.io/badge/Architecture-Autonomous-orange?style=flat-square" alt="Autonomous"></a>
@@ -26,14 +26,14 @@
 
 Add your evolving dragon to your GitHub Profile README:
 
-### Option A: Central Hub (Recommended - No Forking Required)
+### Option A: The 1-Click Form (Recommended - No Forking Required)
 
 No need to fork or configure GitHub Actions. We generate and host your evolving dragon automatically:
 
-1. **Register your Profile (Zero Code)**:
-   Comment `/register` on the **[Pinned Registration Issue (#2)](#)**: [Direct Link to Comment Box](https://github.com/Deepak-Kambala/Drago/issues/2#issue-comment-box) (or submit a 1-click issue via **[Register My Dragon Form](https://github.com/Deepak-Kambala/Drago/issues/new?template=register.yml)**).
+1. **Register your Profile (1-Click Form)**:
+   Click **[Register My Dragon (1-Click Form)](https://github.com/Deepak-Kambala/Drago/issues/new?template=register.yml)**, select your dragon's visual palette, and click **Submit new issue**.
 2. **Instant Generation**:
-   Within 30 seconds, Drago's automated bot evaluates your GitHub contributions, generates your personal dragon, comments with your embed link, and closes the issue.
+   Within ~30 seconds, Drago's automated bot evaluates your real GitHub contributions, generates your personal dragon, comments with your embed link, and closes the issue.
 3. **Embed in your Profile README** (`<username>/<username>`):
    Paste this snippet into your profile `README.md` (replace `YOUR_USERNAME` with your GitHub username):
 
