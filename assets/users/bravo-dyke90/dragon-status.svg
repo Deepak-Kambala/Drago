@@ -3,7 +3,7 @@
     <!-- Metallic Gold Outer Border Gradient -->
     <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFDF43" />
-      <stop offset="35%" stop-color="#00D2FF" />
+      <stop offset="35%" stop-color="#FF7700" />
       <stop offset="75%" stop-color="#D99B00" />
       <stop offset="100%" stop-color="#A67300" />
     </linearGradient>
@@ -17,14 +17,14 @@
     <!-- Dynamic Progress Bar Gradient -->
     <linearGradient id="barGrad" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="0%" stop-color="#D98A00" />
-      <stop offset="60%" stop-color="#00D2FF" />
-      <stop offset="100%" stop-color="#80E9FF" />
+      <stop offset="60%" stop-color="#FF7700" />
+      <stop offset="100%" stop-color="#FFAA4D" />
     </linearGradient>
 
     <!-- Lightning Bolt Gradient -->
     <linearGradient id="boltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FFF085" />
-      <stop offset="100%" stop-color="#00D2FF" />
+      <stop offset="100%" stop-color="#FF7700" />
     </linearGradient>
 
     <!-- Subtle Tech Glow Filter -->
@@ -51,16 +51,16 @@
     <!-- Chamfered Level Badge -->
     <polygon points="24,18 76,18 83,28 76,38 24,38 17,28"
              fill="#0B0E14"
-             stroke="#00D2FF"
+             stroke="#FF7700"
              stroke-width="1.5" />
     <text x="50" y="32"
-          fill="#00D2FF"
+          fill="#FF7700"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif"
           font-size="11"
           font-weight="900"
           font-style="italic"
           text-anchor="middle"
-          letter-spacing="0.5">LVL 1</text>
+          letter-spacing="0.5">LVL 2</text>
 
     <!-- Bold Italic Stage Name -->
     <text x="96" y="32.5"
@@ -69,14 +69,14 @@
           font-size="16"
           font-weight="900"
           font-style="italic"
-          letter-spacing="1">EGG</text>
+          letter-spacing="1">HATCHLING</text>
 
     <!-- Dynamic XP & Percentage -->
     <text x="628" y="32"
           text-anchor="end"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Montserrat', sans-serif">
-      <tspan fill="#00D2FF" font-size="14" font-weight="900" font-style="italic">5.1 XP</tspan>
-      <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (51%)</tspan>
+      <tspan fill="#FF7700" font-size="14" font-weight="900" font-style="italic">14.1 XP</tspan>
+      <tspan fill="#768390" font-size="12" font-weight="700" font-style="italic"> (10%)</tspan>
     </text>
   </g>
 
@@ -85,11 +85,11 @@
     <!-- Recessed Dark Track -->
     <rect x="20" y="46" width="608" height="8" rx="2" fill="#12161F" stroke="#222834" stroke-width="1" />
     <!-- Angled Leading-Edge Progress Fill -->
-    <polygon points="20,46 330,46 325,54 20,54"
+    <polygon points="20,46 82,46 77,54 20,54"
              fill="url(#barGrad)"
              filter="url(#softGlow)" />
     <!-- Subtle Specular Top Highlight Line -->
-    <line x1="20" y1="47" x2="330" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
+    <line x1="20" y1="47" x2="82" y2="47" stroke="#FFF59D" stroke-width="1" stroke-opacity="0.8" />
   </g>
 
   <!-- BOTTOM STATS: 4 Separated Columns -->
@@ -135,11 +135,11 @@
       <polygon points="9,1 2,10 7.5,10 5,18 14,8 8.5,8" fill="url(#boltGrad)" />
     </g>
     <text x="202" y="100"
-          fill="#00D2FF"
+          fill="#FF7700"
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">5.1</text>
+          font-style="italic">14.1</text>
   </g>
 
   <!-- Column 3: COMMITS -->
@@ -162,7 +162,7 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">5</text>
+          font-style="italic">6</text>
   </g>
 
   <!-- Column 4: PULL REQUESTS -->
@@ -184,6 +184,6 @@
           font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
           font-size="15"
           font-weight="900"
-          font-style="italic">0</text>
+          font-style="italic">2</text>
   </g>
 </svg>
